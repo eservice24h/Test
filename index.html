@@ -334,6 +334,7 @@
       display: flex;
       flex-direction: column;
       max-width: 100%;
+      cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
@@ -721,21 +722,21 @@
       <div class="panel">
         <h2 class="section-title">গ্রাফিক্স ডিজাইন</h2>
         <div class="cards-grid">
-          <div class="service-card" data-requires-login="true">
+          <div class="service-card" data-requires-login="true" data-target="design-printing.html">
             <div class="card-img-wrap">
               <img src="1vcard.jpg" alt="ভিজিটিং কার্ড" />
             </div>
             <div class="card-label">ভিজিটিং কার্ড</div>
           </div>
 
-          <div class="service-card" data-requires-login="true">
+          <div class="service-card" data-requires-login="true" data-target="design-printing.html">
             <div class="card-img-wrap">
               <img src="1poster.jpg" alt="পোস্টার" />
             </div>
             <div class="card-label">পোস্টার</div>
           </div>
 
-          <div class="service-card" data-requires-login="true">
+          <div class="service-card" data-requires-login="true" data-target="design-printing.html">
             <div class="card-img-wrap">
               <img src="1leaflet.jpg" alt="লিফলেট" />
             </div>
@@ -747,21 +748,21 @@
       <div class="panel">
         <h2 class="section-title">ডিজিটাল ই-সার্ভিস</h2>
         <div class="cards-grid">
-          <div class="service-card" data-requires-login="true">
+          <div class="service-card" data-requires-login="true" data-target="digital-eservice.html">
             <div class="card-img-wrap">
               <img src="1nid.jpg" alt="এনআইডি কার্ডের সকল সার্ভিস" />
             </div>
             <div class="card-label">এনআইডি কার্ডের সকল সার্ভিস</div>
           </div>
 
-          <div class="service-card" data-requires-login="true">
+          <div class="service-card" data-requires-login="true" data-target="digital-eservice.html">
             <div class="card-img-wrap">
               <img src="1passport.jpg" alt="পাসপোর্টের সকল সার্ভিস" />
             </div>
             <div class="card-label">পাসপোর্টের সকল সার্ভিস</div>
           </div>
 
-          <div class="service-card" data-requires-login="true">
+          <div class="service-card" data-requires-login="true" data-target="digital-eservice.html">
             <div class="card-img-wrap">
               <img src="1etin.png" alt="e-TIN, e-VAT, e-Return" />
             </div>
@@ -828,48 +829,54 @@
     </div>
   </footer>
 
-  <script src="auth-guard.js"></script>
   <script>
+    const GATEWAYS_STORAGE_KEY = 'gs_payment_gateways_list';
+
     const threeDotBtn = document.getElementById('threeDotBtn');
     const threeDotDropdown = document.getElementById('threeDotDropdown');
     const profileMenuLink = document.getElementById('profileMenuLink');
-    const logoutMenuBtn = document.getElementById('logoutMenuBtn');
+    const authMenuLink = document.getElementById('authMenuLink');
     const paymentSectionMenuBtn = document.getElementById('paymentSectionMenuBtn');
+    const logoutMenuBtn = document.getElementById('logoutMenuBtn');
     const paymentSectionPanel = document.getElementById('paymentSectionPanel');
     const closePaymentPanelBtn = document.getElementById('closePaymentPanelBtn');
     const addGatewayForm = document.getElementById('addGatewayForm');
     const gatewayGrid = document.getElementById('gatewayGrid');
 
-    const GATEWAYS_STORAGE_KEY = 'gs_payment_gateways_list';
-
-    function checkUserLoggedIn() {
-      // auth-guard.js যদি profileMenuLink বা logoutMenuBtn দৃশ্যমান করে থাকে, অথবা storage-এ ইউজার থাকে
-      const guardLoggedIn =
-        (profileMenuLink && profileMenuLink.style.display !== 'none') ||
-        (logoutMenuBtn && logoutMenuBtn.style.display !== 'none');
-
-      const storageLoggedIn =
+    function isLoggedIn() {
+      return (
+        localStorage.getItem('gs_logged_in') === 'true' ||
         localStorage.getItem('isLoggedIn') === 'true' ||
-        localStorage.getItem('gs_user_logged_in') === 'true' ||
         localStorage.getItem('loggedInUser') !== null ||
-        localStorage.getItem('currentUser') !== null ||
-        sessionStorage.getItem('loggedInUser') !== null ||
-        sessionStorage.getItem('currentUser') !== null;
-
-      return guardLoggedIn || storageLoggedIn;
+        sessionStorage.getItem('loggedInUser') !== null
+      );
     }
 
-    function syncPaymentMenuOption() {
-      const loggedIn = checkUserLoggedIn();
+    function applyAuthUI() {
+      const loggedIn = isLoggedIn();
+      profileMenuLink.style.display = loggedIn ? 'block' : 'none';
       paymentSectionMenuBtn.style.display = loggedIn ? 'block' : 'none';
+      logoutMenuBtn.style.display = loggedIn ? 'block' : 'none';
+      authMenuLink.style.display = loggedIn ? 'none' : 'block';
+
       if (!loggedIn) {
         paymentSectionPanel.classList.remove('active');
       }
     }
 
+    logoutMenuBtn.addEventListener('click', () => {
+      localStorage.removeItem('gs_logged_in');
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('loggedInUser');
+      sessionStorage.removeItem('loggedInUser');
+      threeDotDropdown.classList.remove('show');
+      threeDotBtn.setAttribute('aria-expanded', 'false');
+      applyAuthUI();
+    });
+
     threeDotBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      syncPaymentMenuOption();
+      applyAuthUI();
       const isOpen = threeDotDropdown.classList.toggle('show');
       threeDotBtn.setAttribute('aria-expanded', isOpen);
     });
@@ -882,7 +889,7 @@
     });
 
     paymentSectionMenuBtn.addEventListener('click', () => {
-      if (!checkUserLoggedIn()) return;
+      if (!isLoggedIn()) return;
       threeDotDropdown.classList.remove('show');
       threeDotBtn.setAttribute('aria-expanded', 'false');
       paymentSectionPanel.classList.add('active');
@@ -892,6 +899,18 @@
 
     closePaymentPanelBtn.addEventListener('click', () => {
       paymentSectionPanel.classList.remove('active');
+    });
+
+    // সার্ভিস কার্ডে ক্লিক করলে লগইন না থাকলে auth.html-এ নিয়ে যাবে
+    document.querySelectorAll('.service-card[data-requires-login="true"]').forEach((card) => {
+      card.addEventListener('click', () => {
+        const target = card.getAttribute('data-target') || 'index.html';
+        if (!isLoggedIn()) {
+          window.location.href = `auth.html?redirect=${encodeURIComponent(target)}`;
+          return;
+        }
+        window.location.href = target;
+      });
     });
 
     function getGateways() {
@@ -954,7 +973,7 @@
 
     addGatewayForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (!checkUserLoggedIn()) return;
+      if (!isLoggedIn()) return;
 
       const type = document.getElementById('gatewayType').value.trim();
       const name = document.getElementById('gatewayName').value.trim();
@@ -976,9 +995,8 @@
       renderGateways();
     });
 
-    // auth-guard.js লোড হওয়ার পর মেনু স্টেট সিঙ্ক করা
-    window.addEventListener('load', syncPaymentMenuOption);
-    syncPaymentMenuOption();
+    applyAuthUI();
+    renderGateways();
 
     const bnMonths = [
       'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
