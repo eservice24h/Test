@@ -1,120 +1,167 @@
 (function () {
-  const PUBLIC_PAGES = ['index.html', 'contact.html', 'auth.html', 'admin-login.html', ''];
+  const LOGIN_FLAG_KEYS = ['gs_logged_in', 'isLoggedIn'];
+  const USER_SESSION_KEYS = ['loggedInUser', 'currentUser'];
 
-  function getCurrentPageName() {
-    const path = window.location.pathname || '';
-    const lastPart = path.split('/').pop() || 'index.html';
-    return lastPart.split('?')[0].split('#')[0].toLowerCase();
-  }
-
-  function getActiveUser() {
-    try {
-      return JSON.parse(localStorage.getItem('graphicStudioActiveUser') || 'null');
-    } catch (e) {
-      return null;
+  function readUserSession() {
+    for (const key of USER_SESSION_KEYS) {
+      const raw = localStorage.getItem(key) || sessionStorage.getItem(key);
+      if (raw && raw.trim() !== '') {
+        try {
+          return JSON.parse(raw);
+        } catch {
+          return { user: raw };
+        }
+      }
     }
+    return null;
   }
 
   function isUserLoggedIn() {
-    const user = getActiveUser();
-    return Boolean(user && user.mobile);
+    const hasFlag = LOGIN_FLAG_KEYS.some(
+      (key) => localStorage.getItem(key) === 'true' || sessionStorage.getItem(key) === 'true'
+    );
+    const session = readUserSession();
+    return Boolean(hasFlag || session);
   }
 
-  function enforcePageAccess() {
-    const currentPage = getCurrentPageName();
-    const isPublic = PUBLIC_PAGES.includes(currentPage);
+  function setUserLoggedIn(userInfo) {
+    const payload =
+      typeof userInfo === 'object' && userInfo !== null
+        ? userInfo
+        : { user: userInfo || 'User', loggedInAt: new Date().toISOString() };
 
-    if (!isPublic && !isUserLoggedIn()) {
-      window.location.replace('auth.html');
+    localStorage.setItem('gs_logged_in', 'true');
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('loggedInUser', JSON.stringify(payload));
+    sessionStorage.setItem('loggedInUser', JSON.stringify(payload));
+    syncAuthUI();
+  }
+
+  function logoutUser(redirectTo) {
+    LOGIN_FLAG_KEYS.forEach((key) => {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    });
+    USER_SESSION_KEYS.forEach((key) => {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    });
+
+    syncAuthUI();
+
+    if (redirectTo) {
+      window.location.href = redirectTo;
     }
   }
 
-  function syncMenuUI() {
+  function promptAndRedirectLogin(targetUrl) {
+    const safeTarget = targetUrl || window.location.pathname.split('/').pop() || 'index.html';
+    alert('এই সেকশনে প্রবেশ করতে আগে লগইন করুন।');
+    window.location.href = `auth.html?redirect=${encodeURIComponent(safeTarget)}`;
+  }
+
+  function syncAuthUI() {
     const loggedIn = isUserLoggedIn();
 
     const profileLink = document.getElementById('profileMenuLink');
     const authLink = document.getElementById('authMenuLink');
     const contactLink = document.getElementById('contactMenuLink');
     const adminLink = document.getElementById('adminMenuLink');
-    const logoutBtn = document.getElementById('logoutMenuBtn') || document.getElementById('logoutBtn') || document.getElementById('logoutBtnHeader');
+    const logoutBtn = document.getElementById('logoutMenuBtn');
 
     if (loggedIn) {
+      // লগইন অবস্থায় শুধুমাত্র: প্রোফাইল, যোগাযোগ ও লগআউট
       if (profileLink) profileLink.style.display = 'block';
       if (contactLink) contactLink.style.display = 'block';
       if (logoutBtn) logoutBtn.style.display = 'block';
-
       if (authLink) authLink.style.display = 'none';
       if (adminLink) adminLink.style.display = 'none';
     } else {
+      // লগইন না থাকলে: লগইন/সাইনআপ, যোগাযোগ ও অ্যাডমিন লগইন
+      if (profileLink) profileLink.style.display = 'none';
+      if (logoutBtn) logoutBtn.style.display = 'none';
       if (authLink) authLink.style.display = 'block';
       if (contactLink) contactLink.style.display = 'block';
       if (adminLink) adminLink.style.display = 'block';
+    }
 
-      if (profileLink) profileLink.style.display = 'none';
-      if (logoutBtn) logoutBtn.style.display = 'none';
+    const currentPage = window.location.pathname.split('/').pop().toLowerCase();
+    const protectedPages = ['design-printing.html', 'digital-eservice.html', 'profile.html'];
+    if (protectedPages.includes(currentPage) && !loggedIn) {
+      promptAndRedirectLogin(currentPage);
     }
   }
 
-  function guardLinksAndServices() {
-    document.addEventListener('click', (e) => {
-      if (isUserLoggedIn()) return;
-
-      const anchor = e.target.closest('a[href]');
-      if (anchor) {
-        const href = (anchor.getAttribute('href') || '').trim();
-        if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
-
-        const targetPage = href.split('/').pop().split('?')[0].split('#')[0].toLowerCase();
-        if (!PUBLIC_PAGES.includes(targetPage)) {
-          e.preventDefault();
-          window.location.href = 'auth.html';
-          return;
-        }
-      }
-
-      const gatedEl = e.target.closest('[data-requires-login="true"]');
-      if (gatedEl) {
+  function bindAuthEvents() {
+    const logoutBtn = document.getElementById('logoutMenuBtn');
+    if (logoutBtn && !logoutBtn.dataset.guardBound) {
+      logoutBtn.dataset.guardBound = 'true';
+      logoutBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = 'auth.html';
+        const dropdown = document.getElementById('threeDotDropdown');
+        const dotBtn = document.getElementById('threeDotBtn');
+        if (dropdown) dropdown.classList.remove('show');
+        if (dotBtn) dotBtn.setAttribute('aria-expanded', 'false');
+        logoutUser();
+      });
+    }
+
+    const profileLink = document.getElementById('profileMenuLink');
+    if (profileLink && !profileLink.dataset.guardBound) {
+      profileLink.dataset.guardBound = 'true';
+      profileLink.addEventListener('click', (e) => {
+        if (!isUserLoggedIn()) {
+          e.preventDefault();
+          promptAndRedirectLogin('profile.html');
+        }
+      });
+    }
+
+    // ডিজাইন অ্যান্ড প্রিন্টিং ও ডিজিটাল ই-সার্ভিস নেভিগেশন লিংক সুরক্ষা
+    const protectedNavIds = ['navDesignPrinting', 'navDigitalEservice'];
+    protectedNavIds.forEach((id) => {
+      const linkEl = document.getElementById(id);
+      if (linkEl && !linkEl.dataset.guardBound) {
+        linkEl.dataset.guardBound = 'true';
+        linkEl.addEventListener('click', (e) => {
+          if (!isUserLoggedIn()) {
+            e.preventDefault();
+            promptAndRedirectLogin(linkEl.getAttribute('href'));
+          }
+        });
       }
+    });
+
+    // data-requires-login="true" যুক্ত কার্ড বা এলিমেন্টে ক্লিক করলে লগইন চেক
+    document.querySelectorAll('[data-requires-login="true"]').forEach((el) => {
+      if (el.dataset.guardBound) return;
+      el.dataset.guardBound = 'true';
+      el.addEventListener('click', (e) => {
+        const target = el.getAttribute('data-target') || el.getAttribute('href') || 'index.html';
+        if (!isUserLoggedIn()) {
+          e.preventDefault();
+          promptAndRedirectLogin(target);
+        } else if (el.tagName !== 'A' && el.getAttribute('data-target')) {
+          window.location.href = el.getAttribute('data-target');
+        }
+      });
     });
   }
 
-  function bindLogout() {
-    const logoutBtn = document.getElementById('logoutMenuBtn') || document.getElementById('logoutBtn') || document.getElementById('logoutBtnHeader');
-    if (logoutBtn && !logoutBtn.dataset.guardBound) {
-      logoutBtn.dataset.guardBound = 'true';
-      logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('graphicStudioActiveUser');
-        syncMenuUI();
-        window.location.href = 'index.html';
-      });
-    }
-  }
-
-  enforcePageAccess();
+  window.AuthGuard = {
+    isLoggedIn: isUserLoggedIn,
+    getUser: readUserSession,
+    login: setUserLoggedIn,
+    logout: logoutUser,
+    requireLogin: promptAndRedirectLogin,
+    sync: syncAuthUI
+  };
 
   document.addEventListener('DOMContentLoaded', () => {
-    syncMenuUI();
-    bindLogout();
-    guardLinksAndServices();
+    syncAuthUI();
+    bindAuthEvents();
   });
 
-  window.addEventListener('pageshow', () => {
-    enforcePageAccess();
-    syncMenuUI();
-  });
-
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'graphicStudioActiveUser') {
-      enforcePageAccess();
-      syncMenuUI();
-    }
-  });
-
-  window.GraphicStudioAuthGuard = {
-    isUserLoggedIn,
-    getActiveUser,
-    syncMenuUI
-  };
+  syncAuthUI();
+  bindAuthEvents();
 })();
