@@ -112,7 +112,6 @@
       align-items: start;
     }
 
-    /* Left Side: Time & Info */
     .time-panel {
       background: var(--card);
       border: 1px solid var(--border);
@@ -169,7 +168,6 @@
       margin-bottom: 4px;
     }
 
-    /* Right Side: Login & Signup */
     .auth-panel {
       background: var(--card);
       border: 1px solid var(--border);
@@ -332,16 +330,8 @@
       display: block;
     }
 
-    .login-only {
-      display: none;
-    }
-
     body.login-mode .signup-only {
       display: none;
-    }
-
-    body.login-mode .login-only {
-      display: block;
     }
 
     footer {
@@ -423,7 +413,6 @@
   </header>
 
   <main>
-    <!-- একপাশে টাইম ও তারিখ -->
     <aside class="time-panel">
       <div class="clock-box">
         <div class="live-time" id="liveClock">12:00:00 <span class="ampm">AM</span></div>
@@ -436,7 +425,6 @@
       </div>
     </aside>
 
-    <!-- অপরপাশে লগইন অথবা সাইনআপ -->
     <section class="auth-panel">
       <div class="mode-switcher" role="tablist" aria-label="লগইন ও সাইনআপ বাটন">
         <button type="button" class="mode-btn" id="switchLoginBtn">লগইন</button>
@@ -447,19 +435,16 @@
       <p class="sub-desc" id="authSubDesc">নাম ও হোয়াটসঅ্যাপ নাম্বার দিন। ইউজারনেম সিস্টেম থেকেই অটোমেটিক সেট হয়ে যাবে।</p>
 
       <form id="authForm">
-        <!-- সাইনআপের ফিল্ড -->
         <div class="form-group signup-only">
           <label for="fullNameInput">নাম</label>
           <input type="text" id="fullNameInput" placeholder="আপনার পূর্ণ নাম লিখুন" />
         </div>
 
-        <!-- সাইনআপ ও লগইন উভয়ের জন্য হোয়াটসঅ্যাপ নাম্বার -->
         <div class="form-group">
           <label for="whatsappInput">হোয়াটসঅ্যাপ নাম্বার</label>
           <input type="tel" id="whatsappInput" placeholder="যেমন: 017XXXXXXXX" required />
         </div>
 
-        <!-- সাইনআপের ঐচ্ছিক ইমেইল -->
         <div class="form-group signup-only">
           <label for="emailInput">ইমেইল (ঐচ্ছিক)</label>
           <input type="email" id="emailInput" placeholder="ইমেইল দিলে প্রোফাইলে লক থাকবে, না দিলে পরে আপডেট করা যাবে" />
@@ -471,13 +456,11 @@
           <input type="password" id="passwordInput" placeholder="পাসওয়ার্ড লিখুন" required />
         </div>
 
-        <!-- সাইনআপের কনফার্ম পাসওয়ার্ড -->
         <div class="form-group signup-only">
           <label for="confirmPasswordInput">কনফার্ম পাসওয়ার্ড</label>
           <input type="password" id="confirmPasswordInput" placeholder="পাসওয়ার্ড আবার লিখুন" />
         </div>
 
-        <!-- ৬ সংখ্যার ক্যাপচা -->
         <div class="form-group">
           <label for="captchaInput">ক্যাপচা কোড (৬ সংখ্যা)</label>
           <div class="captcha-box">
@@ -532,6 +515,10 @@
     let isLoginMode = false;
     let currentSixDigitCaptcha = '';
 
+    function normalizePhone(rawPhone) {
+      return String(rawPhone || '').replace(/\D/g, '').trim();
+    }
+
     function setAuthMode(loginMode) {
       isLoginMode = loginMode;
       authStatusMsg.textContent = '';
@@ -582,14 +569,15 @@
         .toLowerCase()
         .replace(/[^a-z0-9]/g, '')
         .slice(0, 8) || 'gsuser';
-      const lastFourPhone = String(whatsappNumber || '').replace(/\D/g, '').slice(-4) || String(Math.floor(1000 + Math.random() * 9000));
+      const lastFourPhone = normalizePhone(whatsappNumber).slice(-4) || String(Math.floor(1000 + Math.random() * 9000));
       const randomSuffix = Math.floor(10 + Math.random() * 90);
       return `${cleanName}_${lastFourPhone}${randomSuffix}`;
     }
 
     function getRegisteredAccounts() {
       try {
-        return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)) || [];
+        const parsed = JSON.parse(localStorage.getItem(ACCOUNTS_KEY));
+        return Array.isArray(parsed) ? parsed : [];
       } catch {
         return [];
       }
@@ -605,7 +593,7 @@
     }
 
     function completeSessionLogin(sessionData, successText) {
-      if (window.AuthGuard) {
+      if (window.AuthGuard && typeof window.AuthGuard.login === 'function') {
         window.AuthGuard.login(sessionData);
       } else {
         localStorage.setItem('gs_logged_in', 'true');
@@ -622,17 +610,18 @@
 
       setTimeout(() => {
         window.location.href = redirectUrl;
-      }, 500);
+      }, 450);
     }
 
     authForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const whatsapp = whatsappInput.value.trim();
+      const whatsappRaw = whatsappInput.value.trim();
+      const whatsappNorm = normalizePhone(whatsappRaw);
       const password = passwordInput.value;
       const enteredCaptcha = captchaInput.value.trim();
 
-      if (!whatsapp || !password) {
+      if (!whatsappRaw || !password) {
         showError('হোয়াটসঅ্যাপ নাম্বার এবং পাসওয়ার্ড লিখুন।');
         return;
       }
@@ -647,12 +636,16 @@
       const accounts = getRegisteredAccounts();
 
       if (isLoginMode) {
-        const matched = accounts.find(
-          (acc) => acc.whatsapp === whatsapp && acc.password === password
-        );
+        const matched = accounts.find((acc) => {
+          const accPhoneNorm = normalizePhone(acc.whatsapp || acc.phone || '');
+          const phoneMatch =
+            (whatsappNorm && accPhoneNorm && accPhoneNorm === whatsappNorm) ||
+            String(acc.whatsapp || '').trim() === whatsappRaw;
+          return phoneMatch && String(acc.password || '') === password;
+        });
 
         if (!matched) {
-          showError('হোয়াটসঅ্যাপ নাম্বার বা পাসওয়ার্ড মেলেনি। আগে সাইনআপ করে থাকলে সঠিক তথ্য দিন।');
+          showError('হোয়াটসঅ্যাপ নাম্বার বা পাসওয়ার্ড মেলেনি। সাইনআপ করার সময় যে নাম্বার ও পাসওয়ার্ড দিয়েছিলেন, সেটি দিন।');
           return;
         }
 
@@ -681,18 +674,27 @@
           return;
         }
 
-        const existing = accounts.find((acc) => acc.whatsapp === whatsapp);
-        const autoUsername = existing ? existing.username : generateAutoUsername(fullName, whatsapp);
+        const existing = accounts.find((acc) => {
+          const accPhoneNorm = normalizePhone(acc.whatsapp || acc.phone || '');
+          return (whatsappNorm && accPhoneNorm === whatsappNorm) || String(acc.whatsapp || '').trim() === whatsappRaw;
+        });
+
+        const autoUsername = existing && existing.username
+          ? existing.username
+          : generateAutoUsername(fullName, whatsappRaw);
 
         const accountRecord = {
           username: autoUsername,
           fullName: fullName,
-          whatsapp: whatsapp,
+          whatsapp: whatsappRaw,
           email: existing && existing.email ? existing.email : email,
           password: password
         };
 
-        const filtered = accounts.filter((acc) => acc.whatsapp !== whatsapp);
+        const filtered = accounts.filter((acc) => {
+          const accPhoneNorm = normalizePhone(acc.whatsapp || acc.phone || '');
+          return !((whatsappNorm && accPhoneNorm === whatsappNorm) || String(acc.whatsapp || '').trim() === whatsappRaw);
+        });
         filtered.unshift(accountRecord);
         saveRegisteredAccounts(filtered);
 
@@ -709,7 +711,6 @@
       }
     });
 
-    // Live Clock & Bangla Date
     const bnMonths = [
       'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
       'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'
@@ -746,7 +747,9 @@
 
     setInterval(updateClock, 1000);
     updateClock();
-    setAuthMode(false);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    setAuthMode(urlParams.get('mode') === 'login');
   </script>
 </body>
 </html>
