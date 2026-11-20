@@ -213,7 +213,7 @@
     }
 
     .auth-panel p.sub-desc {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       color: var(--muted);
       margin-bottom: 16px;
     }
@@ -266,11 +266,11 @@
       background: #0f172a;
       color: #93c5fd;
       font-family: 'Poppins', sans-serif;
-      font-size: 1.25rem;
+      font-size: 1.05rem;
       font-weight: 700;
-      letter-spacing: 5px;
+      letter-spacing: 2px;
       text-align: center;
-      padding: 9px 12px;
+      padding: 10px 12px;
       border-radius: 8px;
       border: 1px dashed rgba(147, 197, 253, 0.5);
       user-select: none;
@@ -420,8 +420,8 @@
       </div>
 
       <div class="side-note">
-        <strong>সহজ নির্দেশনা</strong>
-        ডান পাশ থেকে <b>লগইন</b> অথবা <b>সাইনআপ</b> বেছে নিয়ে প্রয়োজনীয় তথ্য ও ৬ সংখ্যার ক্যাপচা কোড দিয়ে প্রবেশ করুন। সাইনআপ করলে ইউজারনেম অটোমেটিক সেট হয়ে যাবে।
+        <strong>কাজের আপডেট</strong>
+        হোয়াটসঅ্যাপ নাম্বার দিয়ে অ্যাকাউন্ট খুলুন—কাজের অগ্রগতি ও প্রয়োজনীয় সব আপডেট সরাসরি আপনার কাছে পৌঁছে যাবে।
       </div>
     </aside>
 
@@ -432,7 +432,7 @@
       </div>
 
       <h1 id="authHeading">নতুন অ্যাকাউন্ট তৈরি করুন</h1>
-      <p class="sub-desc" id="authSubDesc">নাম ও হোয়াটসঅ্যাপ নাম্বার দিন। ইউজারনেম সিস্টেম থেকেই অটোমেটিক সেট হয়ে যাবে।</p>
+      <p class="sub-desc" id="authSubDesc">হোয়াটসঅ্যাপ নাম্বার দিয়ে অ্যাকাউন্ট খুলুন—কাজের অগ্রগতি ও প্রয়োজনীয় সব আপডেট সরাসরি আপনার কাছে পৌঁছে যাবে।</p>
 
       <form id="authForm">
         <div class="form-group signup-only">
@@ -461,21 +461,19 @@
           <input type="password" id="confirmPasswordInput" placeholder="পাসওয়ার্ড আবার লিখুন" />
         </div>
 
-        <div class="form-group">
-          <label for="captchaInput">ক্যাপচা কোড (৬ সংখ্যা)</label>
+        <div class="form-group signup-only" id="signupCaptchaGroup">
+          <label for="captchaInput">ক্যাপচা কোড (২টি ইংলিশ লেটার + ২টি ম্যাথের উত্তর)</label>
           <div class="captcha-box">
-            <div class="captcha-code-display" id="captchaDisplay">000000</div>
+            <div class="captcha-code-display" id="captchaDisplay">AB  •  2 + 3 = ?</div>
             <button type="button" class="btn-refresh-captcha" id="refreshCaptchaBtn">↻ নতুন কোড</button>
           </div>
           <input
             type="text"
             id="captchaInput"
-            placeholder="উপরের ৬ সংখ্যার কোড লিখুন"
-            maxlength="6"
-            pattern="\d{6}"
-            inputmode="numeric"
-            required
+            placeholder="যেমন: AB05 বা 05AB (মোট ৪টি ক্যারেক্টার/ডিজিট)"
+            maxlength="4"
           />
+          <span class="hint-text">উদাহরণ: লেটার <b>AB</b> এবং যোগফল <b>05</b> হলে লিখুন <b>AB05</b> বা <b>05AB</b>।</span>
         </div>
 
         <button type="submit" class="btn-submit" id="authSubmitBtn">সাইনআপ করুন</button>
@@ -494,6 +492,7 @@
   <script src="auth-guard.js"></script>
   <script>
     const ACCOUNTS_KEY = 'gs_registered_accounts_v1';
+    const HOME_PAGE_URL = 'index.html';
 
     const switchLoginBtn = document.getElementById('switchLoginBtn');
     const switchSignupBtn = document.getElementById('switchSignupBtn');
@@ -513,10 +512,35 @@
     const authStatusMsg = document.getElementById('authStatusMsg');
 
     let isLoginMode = false;
-    let currentSixDigitCaptcha = '';
+    let expectedLetters = '';
+    let expectedTwoDigitMath = '';
 
     function normalizePhone(rawPhone) {
       return String(rawPhone || '').replace(/\D/g, '').trim();
+    }
+
+    function generateFourCharCaptcha() {
+      const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+      const l1 = alphabet[Math.floor(Math.random() * alphabet.length)];
+      const l2 = alphabet[Math.floor(Math.random() * alphabet.length)];
+      expectedLetters = `${l1}${l2}`;
+
+      const ans = Math.floor(10 + Math.random() * 89);
+      const usePlus = Math.random() < 0.5;
+      let mathText = '';
+
+      if (usePlus) {
+        const a = Math.floor(1 + Math.random() * (ans - 1));
+        const b = ans - a;
+        mathText = `${a} + ${b} = ?`;
+      } else {
+        const b = Math.floor(1 + Math.random() * 20);
+        const a = ans + b;
+        mathText = `${a} - ${b} = ?`;
+      }
+
+      expectedTwoDigitMath = String(ans).padStart(2, '0');
+      captchaDisplay.textContent = `${expectedLetters}  •  ${mathText}`;
     }
 
     function setAuthMode(loginMode) {
@@ -529,40 +553,48 @@
         switchLoginBtn.classList.add('active');
         switchSignupBtn.classList.remove('active');
         authHeading.textContent = 'অ্যাকাউন্টে লগইন করুন';
-        authSubDesc.textContent = 'আপনার হোয়াটসঅ্যাপ নাম্বার, পাসওয়ার্ড ও ৬ সংখ্যার ক্যাপচা কোড দিয়ে প্রবেশ করুন।';
+        authSubDesc.textContent = 'আপনার হোয়াটসঅ্যাপ নাম্বার ও পাসওয়ার্ড দিয়ে লগইন করুন।';
         authSubmitBtn.textContent = 'লগইন করুন';
         fullNameInput.required = false;
         confirmPasswordInput.required = false;
+        captchaInput.required = false;
       } else {
         document.body.classList.remove('login-mode');
         switchSignupBtn.classList.add('active');
         switchLoginBtn.classList.remove('active');
         authHeading.textContent = 'নতুন অ্যাকাউন্ট তৈরি করুন';
-        authSubDesc.textContent = 'নাম ও হোয়াটসঅ্যাপ নাম্বার দিন। ইউজারনেম সিস্টেম থেকেই অটোমেটিক সেট হয়ে যাবে।';
+        authSubDesc.textContent = 'হোয়াটসঅ্যাপ নাম্বার দিয়ে অ্যাকাউন্ট খুলুন—কাজের অগ্রগতি ও প্রয়োজনীয় সব আপডেট সরাসরি আপনার কাছে পৌঁছে যাবে।';
         authSubmitBtn.textContent = 'সাইনআপ করুন';
         fullNameInput.required = true;
         confirmPasswordInput.required = true;
+        captchaInput.required = true;
+        generateFourCharCaptcha();
+        captchaInput.value = '';
       }
-
-      generateSixDigitCaptcha();
-      captchaInput.value = '';
     }
 
     switchLoginBtn.addEventListener('click', () => setAuthMode(true));
     switchSignupBtn.addEventListener('click', () => setAuthMode(false));
 
-    function generateSixDigitCaptcha() {
-      const code = String(Math.floor(100000 + Math.random() * 900000));
-      currentSixDigitCaptcha = code;
-      captchaDisplay.textContent = code;
-    }
-
     refreshCaptchaBtn.addEventListener('click', () => {
-      generateSixDigitCaptcha();
+      generateFourCharCaptcha();
       captchaInput.value = '';
       authStatusMsg.textContent = '';
       authStatusMsg.className = 'status-msg';
     });
+
+    function isValidFourCharCaptcha(inputVal) {
+      const clean = String(inputVal || '').trim().toUpperCase();
+      if (clean.length !== 4) return false;
+
+      const lettersPart = clean.replace(/[^A-Z]/g, '');
+      const digitsPart = clean.replace(/\D/g, '');
+
+      const sortedInputLetters = lettersPart.split('').sort().join('');
+      const sortedExpectedLetters = expectedLetters.split('').sort().join('');
+
+      return sortedInputLetters === sortedExpectedLetters && digitsPart === expectedTwoDigitMath;
+    }
 
     function generateAutoUsername(fullName, whatsappNumber) {
       const cleanName = String(fullName || 'user')
@@ -592,7 +624,7 @@
       authStatusMsg.className = 'status-msg error';
     }
 
-    function completeSessionLogin(sessionData, successText) {
+    function completeSessionAndGoHome(sessionData, successText) {
       if (window.AuthGuard && typeof window.AuthGuard.login === 'function') {
         window.AuthGuard.login(sessionData);
       } else {
@@ -605,12 +637,9 @@
       authStatusMsg.textContent = successText;
       authStatusMsg.className = 'status-msg success';
 
-      const params = new URLSearchParams(window.location.search);
-      const redirectUrl = params.get('redirect') || 'index.html';
-
       setTimeout(() => {
-        window.location.href = redirectUrl;
-      }, 450);
+        window.location.href = HOME_PAGE_URL;
+      }, 400);
     }
 
     authForm.addEventListener('submit', (e) => {
@@ -619,17 +648,9 @@
       const whatsappRaw = whatsappInput.value.trim();
       const whatsappNorm = normalizePhone(whatsappRaw);
       const password = passwordInput.value;
-      const enteredCaptcha = captchaInput.value.trim();
 
       if (!whatsappRaw || !password) {
         showError('হোয়াটসঅ্যাপ নাম্বার এবং পাসওয়ার্ড লিখুন।');
-        return;
-      }
-
-      if (!/^\d{6}$/.test(enteredCaptcha) || enteredCaptcha !== currentSixDigitCaptcha) {
-        showError('৬ সংখ্যার ক্যাপচা কোডটি সঠিক নয়। আবার চেষ্টা করুন।');
-        generateSixDigitCaptcha();
-        captchaInput.value = '';
         return;
       }
 
@@ -645,7 +666,7 @@
         });
 
         if (!matched) {
-          showError('হোয়াটসঅ্যাপ নাম্বার বা পাসওয়ার্ড মেলেনি। সাইনআপ করার সময় যে নাম্বার ও পাসওয়ার্ড দিয়েছিলেন, সেটি দিন।');
+          showError('হোয়াটসঅ্যাপ নাম্বার বা পাসওয়ার্ড মেলেনি।');
           return;
         }
 
@@ -658,11 +679,12 @@
           loggedInAt: new Date().toISOString()
         };
 
-        completeSessionLogin(sessionData, `লগইন সফল হয়েছে! ইউজারনেম: ${matched.username}`);
+        completeSessionAndGoHome(sessionData, 'লগইন সফল হয়েছে! হোম পেজে নিয়ে যাওয়া হচ্ছে...');
       } else {
         const fullName = fullNameInput.value.trim();
         const email = emailInput.value.trim();
         const confirmPassword = confirmPasswordInput.value;
+        const enteredCaptcha = captchaInput.value.trim();
 
         if (!fullName) {
           showError('আপনার নাম লিখুন।');
@@ -671,6 +693,13 @@
 
         if (password !== confirmPassword) {
           showError('পাসওয়ার্ড এবং কনফার্ম পাসওয়ার্ড মেলেনি।');
+          return;
+        }
+
+        if (!isValidFourCharCaptcha(enteredCaptcha)) {
+          showError('৪ ডিজিটের ক্যাপচা কোডটি সঠিক নয়। ২টি ইংলিশ লেটার ও ম্যাথের ২ ডিজিটের উত্তর দিন।');
+          generateFourCharCaptcha();
+          captchaInput.value = '';
           return;
         }
 
@@ -707,7 +736,7 @@
           loggedInAt: new Date().toISOString()
         };
 
-        completeSessionLogin(sessionData, `সাইনআপ সফল হয়েছে! অটো ইউজারনেম: ${accountRecord.username}`);
+        completeSessionAndGoHome(sessionData, 'অ্যাকাউন্ট তৈরি হয়েছে! হোম পেজে নিয়ে যাওয়া হচ্ছে...');
       }
     });
 
