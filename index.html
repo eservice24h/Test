@@ -39,7 +39,6 @@
       flex-direction: column;
     }
 
-    /* Top Navigation Bar */
     header {
       background: var(--primary);
       color: #ffffff;
@@ -109,7 +108,6 @@
       color: #ffffff;
     }
 
-    /* Three-Dot Menu */
     .more-menu {
       position: relative;
     }
@@ -178,7 +176,6 @@
       color: var(--accent);
     }
 
-    /* Main Content Layout */
     main {
       flex: 1;
       max-width: 1280px;
@@ -199,7 +196,6 @@
       border: 1px solid var(--border);
     }
 
-    /* Left Column */
     .left-column {
       display: flex;
       flex-direction: column;
@@ -236,7 +232,6 @@
       font-weight: 500;
     }
 
-    /* Notice Board */
     .notice-card {
       border: 1.5px solid var(--notice-border);
       background: var(--notice-bg);
@@ -276,7 +271,6 @@
       border-bottom: none;
     }
 
-    /* Highlighted Instruction Boxes */
     .instruction-boxes {
       display: flex;
       flex-direction: column;
@@ -304,7 +298,6 @@
       border-color: var(--emerald);
     }
 
-    /* Right Column */
     .right-column {
       display: flex;
       flex-direction: column;
@@ -377,7 +370,6 @@
       font-size: 0.88rem;
     }
 
-    /* Payment Gateways Section (Shown after login & three-dot click) */
     .payment-panel {
       display: none;
     }
@@ -545,7 +537,6 @@
       border: 1px dashed #cbd5e1;
     }
 
-    /* Bottom Tagline Banner */
     .tagline-banner {
       background: var(--primary);
       color: #ffffff;
@@ -556,7 +547,6 @@
       font-weight: 600;
     }
 
-    /* Footer */
     footer {
       background: #0f172a;
       color: #e2e8f0;
@@ -664,8 +654,8 @@
       <div class="nav-right">
         <nav>
           <a href="index.html" class="active">হোম পেজ</a>
-          <a href="design-printing.html">ডিজাইন অ্যান্ড প্রিন্টিং</a>
-          <a href="digital-eservice.html">ডিজিটাল ই-সার্ভিস</a>
+          <a href="design-printing.html" id="navDesignPrinting">ডিজাইন অ্যান্ড প্রিন্টিং</a>
+          <a href="digital-eservice.html" id="navDigitalEservice">ডিজিটাল ই-সার্ভিস</a>
         </nav>
 
         <div class="more-menu">
@@ -864,6 +854,19 @@
       }
     }
 
+    function goProtected(targetUrl) {
+      if (isLoggedIn()) {
+        window.location.href = targetUrl;
+      } else {
+        window.location.href = `auth.html?redirect=${encodeURIComponent(targetUrl)}`;
+      }
+    }
+
+    profileMenuLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      goProtected('profile.html');
+    });
+
     logoutMenuBtn.addEventListener('click', () => {
       localStorage.removeItem('gs_logged_in');
       localStorage.removeItem('isLoggedIn');
@@ -901,15 +904,11 @@
       paymentSectionPanel.classList.remove('active');
     });
 
-    // সার্ভিস কার্ডে ক্লিক করলে লগইন না থাকলে auth.html-এ নিয়ে যাবে
+    // সার্ভিস কার্ডে ক্লিক করলে লগইন থাকলে সরাসরি target পেজে যাবে, নাহলে auth.html-এ যাবে
     document.querySelectorAll('.service-card[data-requires-login="true"]').forEach((card) => {
       card.addEventListener('click', () => {
-        const target = card.getAttribute('data-target') || 'index.html';
-        if (!isLoggedIn()) {
-          window.location.href = `auth.html?redirect=${encodeURIComponent(target)}`;
-          return;
-        }
-        window.location.href = target;
+        const target = card.getAttribute('data-target') || 'design-printing.html';
+        goProtected(target);
       });
     });
 
