@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>লগইন / অ্যাকাউন্ট | Graphic Studio</title>
+  <title>লগইন / সাইনআপ | Graphic Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:ital,wght@0,500;0,600;0,700;1,600&display=swap" rel="stylesheet" />
@@ -102,15 +102,75 @@
 
     main {
       flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
+      max-width: 1120px;
+      width: 100%;
+      margin: 24px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+      align-items: start;
     }
 
-    .auth-card {
-      width: 100%;
-      max-width: 450px;
+    /* Left Side: Time & Info */
+    .time-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .clock-box {
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      color: #ffffff;
+      border-radius: 10px;
+      padding: 20px 14px;
+      text-align: center;
+    }
+
+    .live-time {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.15rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      line-height: 1.15;
+    }
+
+    .live-time span.ampm {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-left: 4px;
+      color: #93c5fd;
+    }
+
+    .live-date {
+      margin-top: 6px;
+      font-size: 0.96rem;
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    .side-note {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .side-note strong {
+      display: block;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    /* Right Side: Login & Signup */
+    .auth-panel {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
@@ -118,17 +178,46 @@
       box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
     }
 
-    .auth-card h1 {
-      font-size: 1.45rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 6px;
+    .mode-switcher {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: #f1f5f9;
+      padding: 6px;
+      border-radius: 10px;
     }
 
-    .auth-card p {
+    .mode-btn {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.98rem;
+      font-weight: 700;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.14);
+    }
+
+    .auth-panel h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .auth-panel p.sub-desc {
       font-size: 0.9rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .form-group {
@@ -239,6 +328,22 @@
       color: var(--error);
     }
 
+    .signup-only {
+      display: block;
+    }
+
+    .login-only {
+      display: none;
+    }
+
+    body.login-mode .signup-only {
+      display: none;
+    }
+
+    body.login-mode .login-only {
+      display: block;
+    }
+
     footer {
       background: #0f172a;
       color: #e2e8f0;
@@ -271,6 +376,13 @@
     .footer-right {
       font-size: 0.8rem;
       color: #cbd5e1;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+        margin: 16px auto;
+      }
     }
 
     @media (max-width: 600px) {
@@ -311,22 +423,44 @@
   </header>
 
   <main>
-    <div class="auth-card">
-      <h1>অ্যাকাউন্টে প্রবেশ করুন</h1>
-      <p>আপনার তথ্য ও ৬ সংখ্যার ক্যাপচা কোড দিন। ইউজারনেম অটোমেটিক সেট হয়ে যাবে।</p>
+    <!-- একপাশে টাইম ও তারিখ -->
+    <aside class="time-panel">
+      <div class="clock-box">
+        <div class="live-time" id="liveClock">12:00:00 <span class="ampm">AM</span></div>
+        <div class="live-date" id="liveDate">তারিখ লোড হচ্ছে...</div>
+      </div>
+
+      <div class="side-note">
+        <strong>সহজ নির্দেশনা</strong>
+        ডান পাশ থেকে <b>লগইন</b> অথবা <b>সাইনআপ</b> বেছে নিয়ে প্রয়োজনীয় তথ্য ও ৬ সংখ্যার ক্যাপচা কোড দিয়ে প্রবেশ করুন। সাইনআপ করলে ইউজারনেম অটোমেটিক সেট হয়ে যাবে।
+      </div>
+    </aside>
+
+    <!-- অপরপাশে লগইন অথবা সাইনআপ -->
+    <section class="auth-panel">
+      <div class="mode-switcher" role="tablist" aria-label="লগইন ও সাইনআপ বাটন">
+        <button type="button" class="mode-btn" id="switchLoginBtn">লগইন</button>
+        <button type="button" class="mode-btn active" id="switchSignupBtn">সাইনআপ</button>
+      </div>
+
+      <h1 id="authHeading">নতুন অ্যাকাউন্ট তৈরি করুন</h1>
+      <p class="sub-desc" id="authSubDesc">নাম ও হোয়াটসঅ্যাপ নাম্বার দিন। ইউজারনেম সিস্টেম থেকেই অটোমেটিক সেট হয়ে যাবে।</p>
 
       <form id="authForm">
-        <div class="form-group">
+        <!-- সাইনআপের ফিল্ড -->
+        <div class="form-group signup-only">
           <label for="fullNameInput">নাম</label>
-          <input type="text" id="fullNameInput" placeholder="আপনার পূর্ণ নাম লিখুন" required />
+          <input type="text" id="fullNameInput" placeholder="আপনার পূর্ণ নাম লিখুন" />
         </div>
 
+        <!-- সাইনআপ ও লগইন উভয়ের জন্য হোয়াটসঅ্যাপ নাম্বার -->
         <div class="form-group">
           <label for="whatsappInput">হোয়াটসঅ্যাপ নাম্বার</label>
           <input type="tel" id="whatsappInput" placeholder="যেমন: 017XXXXXXXX" required />
         </div>
 
-        <div class="form-group">
+        <!-- সাইনআপের ঐচ্ছিক ইমেইল -->
+        <div class="form-group signup-only">
           <label for="emailInput">ইমেইল (ঐচ্ছিক)</label>
           <input type="email" id="emailInput" placeholder="ইমেইল দিলে প্রোফাইলে লক থাকবে, না দিলে পরে আপডেট করা যাবে" />
           <span class="hint-text">ইমেইল অপশনাল। খালি রাখলে প্রোফাইল থেকে পরে যুক্ত করতে পারবেন।</span>
@@ -337,11 +471,13 @@
           <input type="password" id="passwordInput" placeholder="পাসওয়ার্ড লিখুন" required />
         </div>
 
-        <div class="form-group">
+        <!-- সাইনআপের কনফার্ম পাসওয়ার্ড -->
+        <div class="form-group signup-only">
           <label for="confirmPasswordInput">কনফার্ম পাসওয়ার্ড</label>
-          <input type="password" id="confirmPasswordInput" placeholder="পাসওয়ার্ড আবার লিখুন" required />
+          <input type="password" id="confirmPasswordInput" placeholder="পাসওয়ার্ড আবার লিখুন" />
         </div>
 
+        <!-- ৬ সংখ্যার ক্যাপচা -->
         <div class="form-group">
           <label for="captchaInput">ক্যাপচা কোড (৬ সংখ্যা)</label>
           <div class="captcha-box">
@@ -359,10 +495,10 @@
           />
         </div>
 
-        <button type="submit" class="btn-submit">প্রবেশ করুন</button>
+        <button type="submit" class="btn-submit" id="authSubmitBtn">সাইনআপ করুন</button>
         <div class="status-msg" id="authStatusMsg"></div>
       </form>
-    </div>
+    </section>
   </main>
 
   <footer>
@@ -374,6 +510,14 @@
 
   <script src="auth-guard.js"></script>
   <script>
+    const ACCOUNTS_KEY = 'gs_registered_accounts_v1';
+
+    const switchLoginBtn = document.getElementById('switchLoginBtn');
+    const switchSignupBtn = document.getElementById('switchSignupBtn');
+    const authHeading = document.getElementById('authHeading');
+    const authSubDesc = document.getElementById('authSubDesc');
+    const authSubmitBtn = document.getElementById('authSubmitBtn');
+
     const authForm = document.getElementById('authForm');
     const fullNameInput = document.getElementById('fullNameInput');
     const whatsappInput = document.getElementById('whatsappInput');
@@ -385,7 +529,40 @@
     const captchaInput = document.getElementById('captchaInput');
     const authStatusMsg = document.getElementById('authStatusMsg');
 
+    let isLoginMode = false;
     let currentSixDigitCaptcha = '';
+
+    function setAuthMode(loginMode) {
+      isLoginMode = loginMode;
+      authStatusMsg.textContent = '';
+      authStatusMsg.className = 'status-msg';
+
+      if (isLoginMode) {
+        document.body.classList.add('login-mode');
+        switchLoginBtn.classList.add('active');
+        switchSignupBtn.classList.remove('active');
+        authHeading.textContent = 'অ্যাকাউন্টে লগইন করুন';
+        authSubDesc.textContent = 'আপনার হোয়াটসঅ্যাপ নাম্বার, পাসওয়ার্ড ও ৬ সংখ্যার ক্যাপচা কোড দিয়ে প্রবেশ করুন।';
+        authSubmitBtn.textContent = 'লগইন করুন';
+        fullNameInput.required = false;
+        confirmPasswordInput.required = false;
+      } else {
+        document.body.classList.remove('login-mode');
+        switchSignupBtn.classList.add('active');
+        switchLoginBtn.classList.remove('active');
+        authHeading.textContent = 'নতুন অ্যাকাউন্ট তৈরি করুন';
+        authSubDesc.textContent = 'নাম ও হোয়াটসঅ্যাপ নাম্বার দিন। ইউজারনেম সিস্টেম থেকেই অটোমেটিক সেট হয়ে যাবে।';
+        authSubmitBtn.textContent = 'সাইনআপ করুন';
+        fullNameInput.required = true;
+        confirmPasswordInput.required = true;
+      }
+
+      generateSixDigitCaptcha();
+      captchaInput.value = '';
+    }
+
+    switchLoginBtn.addEventListener('click', () => setAuthMode(true));
+    switchSignupBtn.addEventListener('click', () => setAuthMode(false));
 
     function generateSixDigitCaptcha() {
       const code = String(Math.floor(100000 + Math.random() * 900000));
@@ -410,28 +587,53 @@
       return `${cleanName}_${lastFourPhone}${randomSuffix}`;
     }
 
+    function getRegisteredAccounts() {
+      try {
+        return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveRegisteredAccounts(list) {
+      localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list));
+    }
+
     function showError(message) {
       authStatusMsg.textContent = message;
       authStatusMsg.className = 'status-msg error';
     }
 
+    function completeSessionLogin(sessionData, successText) {
+      if (window.AuthGuard) {
+        window.AuthGuard.login(sessionData);
+      } else {
+        localStorage.setItem('gs_logged_in', 'true');
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('loggedInUser', JSON.stringify(sessionData));
+        sessionStorage.setItem('loggedInUser', JSON.stringify(sessionData));
+      }
+
+      authStatusMsg.textContent = successText;
+      authStatusMsg.className = 'status-msg success';
+
+      const params = new URLSearchParams(window.location.search);
+      const redirectUrl = params.get('redirect') || 'index.html';
+
+      setTimeout(() => {
+        window.location.href = redirectUrl;
+      }, 500);
+    }
+
     authForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const fullName = fullNameInput.value.trim();
       const whatsapp = whatsappInput.value.trim();
-      const email = emailInput.value.trim();
       const password = passwordInput.value;
-      const confirmPassword = confirmPasswordInput.value;
       const enteredCaptcha = captchaInput.value.trim();
 
-      if (!fullName || !whatsapp || !password || !confirmPassword) {
-        showError('অনুগ্রহ করে প্রয়োজনীয় সব তথ্য পূরণ করুন।');
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        showError('পাসওয়ার্ড এবং কনফার্ম পাসওয়ার্ড মেলেনি।');
+      if (!whatsapp || !password) {
+        showError('হোয়াটসঅ্যাপ নাম্বার এবং পাসওয়ার্ড লিখুন।');
         return;
       }
 
@@ -442,38 +644,109 @@
         return;
       }
 
-      const autoUsername = generateAutoUsername(fullName, whatsapp);
+      const accounts = getRegisteredAccounts();
 
-      const userSession = {
-        username: autoUsername,
-        fullName: fullName,
-        phone: whatsapp,
-        whatsapp: whatsapp,
-        email: email,
-        loggedInAt: new Date().toISOString()
-      };
+      if (isLoginMode) {
+        const matched = accounts.find(
+          (acc) => acc.whatsapp === whatsapp && acc.password === password
+        );
 
-      if (window.AuthGuard) {
-        window.AuthGuard.login(userSession);
+        if (!matched) {
+          showError('হোয়াটসঅ্যাপ নাম্বার বা পাসওয়ার্ড মেলেনি। আগে সাইনআপ করে থাকলে সঠিক তথ্য দিন।');
+          return;
+        }
+
+        const sessionData = {
+          username: matched.username,
+          fullName: matched.fullName,
+          phone: matched.whatsapp,
+          whatsapp: matched.whatsapp,
+          email: matched.email || '',
+          loggedInAt: new Date().toISOString()
+        };
+
+        completeSessionLogin(sessionData, `লগইন সফল হয়েছে! ইউজারনেম: ${matched.username}`);
       } else {
-        localStorage.setItem('gs_logged_in', 'true');
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('loggedInUser', JSON.stringify(userSession));
-        sessionStorage.setItem('loggedInUser', JSON.stringify(userSession));
+        const fullName = fullNameInput.value.trim();
+        const email = emailInput.value.trim();
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (!fullName) {
+          showError('আপনার নাম লিখুন।');
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          showError('পাসওয়ার্ড এবং কনফার্ম পাসওয়ার্ড মেলেনি।');
+          return;
+        }
+
+        const existing = accounts.find((acc) => acc.whatsapp === whatsapp);
+        const autoUsername = existing ? existing.username : generateAutoUsername(fullName, whatsapp);
+
+        const accountRecord = {
+          username: autoUsername,
+          fullName: fullName,
+          whatsapp: whatsapp,
+          email: existing && existing.email ? existing.email : email,
+          password: password
+        };
+
+        const filtered = accounts.filter((acc) => acc.whatsapp !== whatsapp);
+        filtered.unshift(accountRecord);
+        saveRegisteredAccounts(filtered);
+
+        const sessionData = {
+          username: accountRecord.username,
+          fullName: accountRecord.fullName,
+          phone: accountRecord.whatsapp,
+          whatsapp: accountRecord.whatsapp,
+          email: accountRecord.email,
+          loggedInAt: new Date().toISOString()
+        };
+
+        completeSessionLogin(sessionData, `সাইনআপ সফল হয়েছে! অটো ইউজারনেম: ${accountRecord.username}`);
       }
-
-      authStatusMsg.textContent = `সফলভাবে প্রবেশ করা হয়েছে! ইউজারনেম: ${autoUsername}`;
-      authStatusMsg.className = 'status-msg success';
-
-      const params = new URLSearchParams(window.location.search);
-      const redirectUrl = params.get('redirect') || 'index.html';
-
-      setTimeout(() => {
-        window.location.href = redirectUrl;
-      }, 500);
     });
 
-    generateSixDigitCaptcha();
+    // Live Clock & Bangla Date
+    const bnMonths = [
+      'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
+      'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'
+    ];
+    const bnDays = [
+      'রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'
+    ];
+
+    function toBnDigits(str) {
+      const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+      return String(str).replace(/\d/g, d => bn[d]);
+    }
+
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      const hoursStr = String(hours).padStart(2, '0');
+
+      document.getElementById('liveClock').innerHTML =
+        `${hoursStr}:${minutes}:${seconds} <span class="ampm">${ampm}</span>`;
+
+      const dayName = bnDays[now.getDay()];
+      const dayNum = toBnDigits(now.getDate());
+      const monthName = bnMonths[now.getMonth()];
+      const yearNum = toBnDigits(now.getFullYear());
+
+      document.getElementById('liveDate').textContent =
+        `${dayName}, ${dayNum} ${monthName} ${yearNum}`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+    setAuthMode(false);
   </script>
 </body>
 </html>
