@@ -39,6 +39,7 @@
       flex-direction: column;
     }
 
+    /* Top Navigation Bar */
     header {
       background: var(--primary);
       color: #ffffff;
@@ -108,6 +109,7 @@
       color: #ffffff;
     }
 
+    /* Three-Dot Menu */
     .more-menu {
       position: relative;
     }
@@ -137,7 +139,7 @@
       position: absolute;
       right: 0;
       top: 44px;
-      min-width: 205px;
+      min-width: 195px;
       background: #ffffff;
       color: var(--text);
       border: 1px solid var(--border);
@@ -176,6 +178,7 @@
       color: var(--accent);
     }
 
+    /* Main Content Layout */
     main {
       flex: 1;
       max-width: 1280px;
@@ -196,6 +199,7 @@
       border: 1px solid var(--border);
     }
 
+    /* Left Column */
     .left-column {
       display: flex;
       flex-direction: column;
@@ -232,6 +236,7 @@
       font-weight: 500;
     }
 
+    /* Notice Board */
     .notice-card {
       border: 1.5px solid var(--notice-border);
       background: var(--notice-bg);
@@ -271,6 +276,7 @@
       border-bottom: none;
     }
 
+    /* Highlighted Instruction Boxes */
     .instruction-boxes {
       display: flex;
       flex-direction: column;
@@ -298,6 +304,7 @@
       border-color: var(--emerald);
     }
 
+    /* Right Column */
     .right-column {
       display: flex;
       flex-direction: column;
@@ -370,173 +377,7 @@
       font-size: 0.88rem;
     }
 
-    .payment-panel {
-      display: none;
-    }
-
-    .payment-panel.active {
-      display: block;
-    }
-
-    .payment-panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-      padding-bottom: 6px;
-      border-bottom: 2px solid var(--border);
-    }
-
-    .payment-panel-header .section-title {
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    .btn-close-payment {
-      background: #f1f5f9;
-      color: var(--primary);
-      border: 1px solid #cbd5e1;
-      padding: 5px 11px;
-      border-radius: 7px;
-      font-family: inherit;
-      font-size: 0.84rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .payment-form {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-      gap: 10px;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 14px;
-    }
-
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .form-field label {
-      font-size: 0.83rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .form-field input,
-    .form-field select {
-      padding: 8px 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 7px;
-      font-family: inherit;
-      font-size: 0.88rem;
-      background: #ffffff;
-      color: var(--text);
-    }
-
-    .btn-add-gateway {
-      width: 100%;
-      background: var(--accent);
-      color: #ffffff;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 7px;
-      font-family: inherit;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-add-gateway:hover {
-      background: #1d4ed8;
-    }
-
-    .gateway-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-    }
-
-    .gateway-card {
-      background: #0f172a;
-      color: #e2e8f0;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      border-radius: 10px;
-      padding: 12px 14px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 6px;
-    }
-
-    .gateway-type {
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: #93c5fd;
-    }
-
-    .gateway-name {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #ffffff;
-    }
-
-    .gateway-account {
-      font-family: 'Poppins', sans-serif;
-      font-size: 0.88rem;
-      color: #bfdbfe;
-      word-break: break-all;
-    }
-
-    .gateway-note {
-      font-size: 0.8rem;
-      color: #cbd5e1;
-    }
-
-    .gateway-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 6px;
-    }
-
-    .btn-copy,
-    .btn-del {
-      flex: 1;
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: none;
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-copy {
-      background: rgba(147, 197, 253, 0.18);
-      color: #bfdbfe;
-    }
-
-    .btn-del {
-      background: rgba(220, 38, 38, 0.22);
-      color: #fca5a5;
-    }
-
-    .empty-gateway-msg {
-      font-size: 0.9rem;
-      color: var(--muted);
-      text-align: center;
-      padding: 12px;
-      background: #f8fafc;
-      border-radius: 8px;
-      border: 1px dashed #cbd5e1;
-    }
-
+    /* Bottom Tagline Banner */
     .tagline-banner {
       background: var(--primary);
       color: #ffffff;
@@ -547,6 +388,7 @@
       font-weight: 600;
     }
 
+    /* Footer */
     footer {
       background: #0f172a;
       color: #e2e8f0;
@@ -662,7 +504,6 @@
           <button type="button" class="three-dot-btn" id="threeDotBtn" aria-label="আরও অপশন" aria-expanded="false">&#8942;</button>
           <div class="dropdown-menu" id="threeDotDropdown">
             <a href="profile.html" id="profileMenuLink" style="display: none;">প্রোফাইল</a>
-            <button type="button" id="paymentSectionMenuBtn" style="display: none;">💳 পেমেন্ট সেকশন</button>
             <a href="auth.html" id="authMenuLink">লগইন / সাইনআপ</a>
             <a href="contact.html" id="contactMenuLink">যোগাযোগ</a>
             <a href="admin-login.html" id="adminMenuLink">অ্যাডমিন লগইন</a>
@@ -761,46 +602,6 @@
         </div>
       </div>
 
-      <!-- লগইন করার পর থ্রি-ডট মেনুতে ক্লিক করলে এই পেমেন্ট সেকশনটি ওপেন হবে -->
-      <div class="panel payment-panel" id="paymentSectionPanel">
-        <div class="payment-panel-header">
-          <h2 class="section-title">💳 পেমেন্ট গেটওয়ে সেকশন</h2>
-          <button type="button" class="btn-close-payment" id="closePaymentPanelBtn">বন্ধ করুন ✕</button>
-        </div>
-
-        <form class="payment-form" id="addGatewayForm">
-          <div class="form-field">
-            <label for="gatewayType">মাধ্যমের ধরন</label>
-            <select id="gatewayType" required>
-              <option value="Mobile Banking">Mobile Banking (bKash / Nagad / Rocket)</option>
-              <option value="Bank Account">Bank Account</option>
-              <option value="Payment Gateway">Payment Gateway / Wallet</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label for="gatewayName">গেটওয়ে / ব্যাংকের নাম</label>
-            <input type="text" id="gatewayName" placeholder="যেমন: bKash / BRAC Bank" required />
-          </div>
-
-          <div class="form-field">
-            <label for="gatewayAccount">নম্বর / অ্যাকাউন্ট তথ্য</label>
-            <input type="text" id="gatewayAccount" placeholder="যেমন: 017XXXXXXXX" required />
-          </div>
-
-          <div class="form-field">
-            <label for="gatewayNote">নোট (ঐচ্ছিক)</label>
-            <input type="text" id="gatewayNote" placeholder="যেমন: Personal / Merchant" />
-          </div>
-
-          <div class="form-field" style="justify-content: flex-end;">
-            <button type="submit" class="btn-add-gateway">+ গেটওয়ে অ্যাড করুন</button>
-          </div>
-        </form>
-
-        <div class="gateway-grid" id="gatewayGrid"></div>
-      </div>
-
       <div class="tagline-banner">
         এছাড়াও ডিজাইন, প্রিন্টিং এবং অনলাইনের সকল কাজ এখন এক প্ল্যাটফর্মে।
       </div>
@@ -819,67 +620,16 @@
     </div>
   </footer>
 
+  <script src="auth-guard.js"></script>
   <script>
-    const GATEWAYS_STORAGE_KEY = 'gs_payment_gateways_list';
-
     const threeDotBtn = document.getElementById('threeDotBtn');
     const threeDotDropdown = document.getElementById('threeDotDropdown');
-    const profileMenuLink = document.getElementById('profileMenuLink');
-    const authMenuLink = document.getElementById('authMenuLink');
-    const paymentSectionMenuBtn = document.getElementById('paymentSectionMenuBtn');
-    const logoutMenuBtn = document.getElementById('logoutMenuBtn');
-    const paymentSectionPanel = document.getElementById('paymentSectionPanel');
-    const closePaymentPanelBtn = document.getElementById('closePaymentPanelBtn');
-    const addGatewayForm = document.getElementById('addGatewayForm');
-    const gatewayGrid = document.getElementById('gatewayGrid');
-
-    function isLoggedIn() {
-      return (
-        localStorage.getItem('gs_logged_in') === 'true' ||
-        localStorage.getItem('isLoggedIn') === 'true' ||
-        localStorage.getItem('loggedInUser') !== null ||
-        sessionStorage.getItem('loggedInUser') !== null
-      );
-    }
-
-    function applyAuthUI() {
-      const loggedIn = isLoggedIn();
-      profileMenuLink.style.display = loggedIn ? 'block' : 'none';
-      paymentSectionMenuBtn.style.display = loggedIn ? 'block' : 'none';
-      logoutMenuBtn.style.display = loggedIn ? 'block' : 'none';
-      authMenuLink.style.display = loggedIn ? 'none' : 'block';
-
-      if (!loggedIn) {
-        paymentSectionPanel.classList.remove('active');
-      }
-    }
-
-    function goProtected(targetUrl) {
-      if (isLoggedIn()) {
-        window.location.href = targetUrl;
-      } else {
-        window.location.href = `auth.html?redirect=${encodeURIComponent(targetUrl)}`;
-      }
-    }
-
-    profileMenuLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      goProtected('profile.html');
-    });
-
-    logoutMenuBtn.addEventListener('click', () => {
-      localStorage.removeItem('gs_logged_in');
-      localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('loggedInUser');
-      sessionStorage.removeItem('loggedInUser');
-      threeDotDropdown.classList.remove('show');
-      threeDotBtn.setAttribute('aria-expanded', 'false');
-      applyAuthUI();
-    });
 
     threeDotBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      applyAuthUI();
+      if (window.AuthGuard && typeof window.AuthGuard.sync === 'function') {
+        window.AuthGuard.sync();
+      }
       const isOpen = threeDotDropdown.classList.toggle('show');
       threeDotBtn.setAttribute('aria-expanded', isOpen);
     });
@@ -890,112 +640,6 @@
         threeDotBtn.setAttribute('aria-expanded', 'false');
       }
     });
-
-    paymentSectionMenuBtn.addEventListener('click', () => {
-      if (!isLoggedIn()) return;
-      threeDotDropdown.classList.remove('show');
-      threeDotBtn.setAttribute('aria-expanded', 'false');
-      paymentSectionPanel.classList.add('active');
-      renderGateways();
-      paymentSectionPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-
-    closePaymentPanelBtn.addEventListener('click', () => {
-      paymentSectionPanel.classList.remove('active');
-    });
-
-    // সার্ভিস কার্ডে ক্লিক করলে লগইন থাকলে সরাসরি target পেজে যাবে, নাহলে auth.html-এ যাবে
-    document.querySelectorAll('.service-card[data-requires-login="true"]').forEach((card) => {
-      card.addEventListener('click', () => {
-        const target = card.getAttribute('data-target') || 'design-printing.html';
-        goProtected(target);
-      });
-    });
-
-    function getGateways() {
-      try {
-        return JSON.parse(localStorage.getItem(GATEWAYS_STORAGE_KEY)) || [];
-      } catch {
-        return [];
-      }
-    }
-
-    function saveGateways(list) {
-      localStorage.setItem(GATEWAYS_STORAGE_KEY, JSON.stringify(list));
-    }
-
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    function renderGateways() {
-      const list = getGateways();
-      if (!list.length) {
-        gatewayGrid.innerHTML = '<div class="empty-gateway-msg">এখনো কোনো পেমেন্ট গেটওয়ে যুক্ত করা হয়নি। উপরের ফর্ম থেকে নতুন মাধ্যম অ্যাড করুন।</div>';
-        return;
-      }
-
-      gatewayGrid.innerHTML = list.map((item) => `
-        <div class="gateway-card">
-          <div>
-            <div class="gateway-type">${escapeHtml(item.type)}</div>
-            <div class="gateway-name">${escapeHtml(item.name)}</div>
-            <div class="gateway-account">${escapeHtml(item.account)}</div>
-            ${item.note ? `<div class="gateway-note">${escapeHtml(item.note)}</div>` : ''}
-          </div>
-          <div class="gateway-actions">
-            <button type="button" class="btn-copy" data-copy="${escapeHtml(item.account)}">কপি নম্বর</button>
-            <button type="button" class="btn-del" data-id="${item.id}">মুছুন</button>
-          </div>
-        </div>
-      `).join('');
-
-      gatewayGrid.querySelectorAll('.btn-copy').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          navigator.clipboard?.writeText(btn.getAttribute('data-copy'));
-          const prev = btn.textContent;
-          btn.textContent = 'কপি হয়েছে ✓';
-          setTimeout(() => { btn.textContent = prev; }, 1400);
-        });
-      });
-
-      gatewayGrid.querySelectorAll('.btn-del').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-id');
-          saveGateways(getGateways().filter((g) => g.id !== id));
-          renderGateways();
-        });
-      });
-    }
-
-    addGatewayForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!isLoggedIn()) return;
-
-      const type = document.getElementById('gatewayType').value.trim();
-      const name = document.getElementById('gatewayName').value.trim();
-      const account = document.getElementById('gatewayAccount').value.trim();
-      const note = document.getElementById('gatewayNote').value.trim();
-
-      if (!name || !account) return;
-
-      const list = getGateways();
-      list.unshift({
-        id: String(Date.now()),
-        type,
-        name,
-        account,
-        note
-      });
-      saveGateways(list);
-      addGatewayForm.reset();
-      renderGateways();
-    });
-
-    applyAuthUI();
-    renderGateways();
 
     const bnMonths = [
       'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
