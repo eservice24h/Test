@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>লগইন | Graphic Studio</title>
+  <title>লগইন / অ্যাকাউন্ট | Graphic Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:ital,wght@0,500;0,600;0,700;1,600&display=swap" rel="stylesheet" />
@@ -17,6 +17,8 @@
       --text: #1e293b;
       --muted: #64748b;
       --border: #e2e8f0;
+      --success: #065f46;
+      --error: #dc2626;
     }
 
     * {
@@ -32,6 +34,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      line-height: 1.5;
     }
 
     header {
@@ -39,6 +42,9 @@
       color: #ffffff;
       padding: 12px 24px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .nav-container {
@@ -60,6 +66,7 @@
       font-family: 'Poppins', sans-serif;
       font-size: 1.55rem;
       font-weight: 700;
+      letter-spacing: 0.4px;
       color: #ffffff;
       line-height: 1.1;
     }
@@ -70,6 +77,13 @@
       margin-top: 2px;
     }
 
+    nav {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
     nav a {
       text-decoration: none;
       color: #e2e8f0;
@@ -77,9 +91,11 @@
       font-weight: 500;
       padding: 7px 13px;
       border-radius: 6px;
+      transition: all 0.2s ease;
     }
 
-    nav a:hover {
+    nav a:hover,
+    nav a.active {
       background: rgba(255, 255, 255, 0.14);
       color: #ffffff;
     }
@@ -92,9 +108,9 @@
       padding: 24px 16px;
     }
 
-    .login-card {
+    .auth-card {
       width: 100%;
-      max-width: 420px;
+      max-width: 450px;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
@@ -102,15 +118,15 @@
       box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
     }
 
-    .login-card h1 {
+    .auth-card h1 {
       font-size: 1.45rem;
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 6px;
     }
 
-    .login-card p {
-      font-size: 0.92rem;
+    .auth-card p {
+      font-size: 0.9rem;
       color: var(--muted);
       margin-bottom: 18px;
     }
@@ -127,6 +143,13 @@
       margin-bottom: 5px;
     }
 
+    .hint-text {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
     .form-group input {
       width: 100%;
       padding: 10px 12px;
@@ -135,6 +158,7 @@
       font-family: inherit;
       font-size: 0.95rem;
       color: var(--text);
+      background: #ffffff;
     }
 
     .form-group input:focus {
@@ -142,7 +166,47 @@
       border-color: var(--accent);
     }
 
-    .btn-login {
+    .captcha-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .captcha-code-display {
+      flex: 1;
+      background: #0f172a;
+      color: #93c5fd;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-align: center;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px dashed rgba(147, 197, 253, 0.5);
+      user-select: none;
+    }
+
+    .btn-refresh-captcha {
+      background: #e2e8f0;
+      color: var(--primary);
+      border: none;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-refresh-captcha:hover {
+      background: #cbd5e1;
+    }
+
+    .btn-submit {
       width: 100%;
       background: var(--accent);
       color: #ffffff;
@@ -156,16 +220,23 @@
       transition: background 0.2s ease;
     }
 
-    .btn-login:hover {
+    .btn-submit:hover {
       background: var(--accent-hover);
     }
 
-    .msg-box {
+    .status-msg {
       margin-top: 12px;
       font-size: 0.9rem;
       font-weight: 600;
-      color: #065f46;
       min-height: 20px;
+    }
+
+    .status-msg.success {
+      color: var(--success);
+    }
+
+    .status-msg.error {
+      color: var(--error);
     }
 
     footer {
@@ -201,9 +272,31 @@
       font-size: 0.8rem;
       color: #cbd5e1;
     }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 10px 12px;
+      }
+
+      .brand-title {
+        font-size: 1.25rem;
+      }
+
+      nav a {
+        font-size: 0.78rem;
+        padding: 5px 8px;
+      }
+
+      .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 6px;
+      }
+    }
   </style>
 </head>
 <body>
+
   <header>
     <div class="nav-container">
       <a href="index.html" class="brand">
@@ -218,23 +311,56 @@
   </header>
 
   <main>
-    <div class="login-card">
-      <h1>অ্যাকাউন্টে লগইন করুন</h1>
-      <p>লগইন করার পর হোম পেজের থ্রি-ডট মেনু থেকে পেমেন্ট সেকশন ব্যবহার করতে পারবেন।</p>
+    <div class="auth-card">
+      <h1>অ্যাকাউন্টে প্রবেশ করুন</h1>
+      <p>আপনার তথ্য ও ৬ সংখ্যার ক্যাপচা কোড দিন। ইউজারনেম অটোমেটিক সেট হয়ে যাবে।</p>
 
-      <form id="loginForm">
+      <form id="authForm">
         <div class="form-group">
-          <label for="loginIdentity">ইমেইল বা মোবাইল নম্বর</label>
-          <input type="text" id="loginIdentity" placeholder="যেমন: graphicstudio2026@gmail.com বা 017XXXXXXXX" required />
+          <label for="fullNameInput">নাম</label>
+          <input type="text" id="fullNameInput" placeholder="আপনার পূর্ণ নাম লিখুন" required />
         </div>
 
         <div class="form-group">
-          <label for="loginPassword">পাসওয়ার্ড</label>
-          <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড লিখুন" required />
+          <label for="whatsappInput">হোয়াটসঅ্যাপ নাম্বার</label>
+          <input type="tel" id="whatsappInput" placeholder="যেমন: 017XXXXXXXX" required />
         </div>
 
-        <button type="submit" class="btn-login">লগইন করুন</button>
-        <div class="msg-box" id="loginMsg"></div>
+        <div class="form-group">
+          <label for="emailInput">ইমেইল (ঐচ্ছিক)</label>
+          <input type="email" id="emailInput" placeholder="ইমেইল দিলে প্রোফাইলে লক থাকবে, না দিলে পরে আপডেট করা যাবে" />
+          <span class="hint-text">ইমেইল অপশনাল। খালি রাখলে প্রোফাইল থেকে পরে যুক্ত করতে পারবেন।</span>
+        </div>
+
+        <div class="form-group">
+          <label for="passwordInput">পাসওয়ার্ড</label>
+          <input type="password" id="passwordInput" placeholder="পাসওয়ার্ড লিখুন" required />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPasswordInput">কনফার্ম পাসওয়ার্ড</label>
+          <input type="password" id="confirmPasswordInput" placeholder="পাসওয়ার্ড আবার লিখুন" required />
+        </div>
+
+        <div class="form-group">
+          <label for="captchaInput">ক্যাপচা কোড (৬ সংখ্যা)</label>
+          <div class="captcha-box">
+            <div class="captcha-code-display" id="captchaDisplay">000000</div>
+            <button type="button" class="btn-refresh-captcha" id="refreshCaptchaBtn">↻ নতুন কোড</button>
+          </div>
+          <input
+            type="text"
+            id="captchaInput"
+            placeholder="উপরের ৬ সংখ্যার কোড লিখুন"
+            maxlength="6"
+            pattern="\d{6}"
+            inputmode="numeric"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn-submit">প্রবেশ করুন</button>
+        <div class="status-msg" id="authStatusMsg"></div>
       </form>
     </div>
   </main>
@@ -246,36 +372,108 @@
     </div>
   </footer>
 
+  <script src="auth-guard.js"></script>
   <script>
-    const loginForm = document.getElementById('loginForm');
-    const loginMsg = document.getElementById('loginMsg');
+    const authForm = document.getElementById('authForm');
+    const fullNameInput = document.getElementById('fullNameInput');
+    const whatsappInput = document.getElementById('whatsappInput');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+    const captchaDisplay = document.getElementById('captchaDisplay');
+    const refreshCaptchaBtn = document.getElementById('refreshCaptchaBtn');
+    const captchaInput = document.getElementById('captchaInput');
+    const authStatusMsg = document.getElementById('authStatusMsg');
 
-    loginForm.addEventListener('submit', (e) => {
+    let currentSixDigitCaptcha = '';
+
+    function generateSixDigitCaptcha() {
+      const code = String(Math.floor(100000 + Math.random() * 900000));
+      currentSixDigitCaptcha = code;
+      captchaDisplay.textContent = code;
+    }
+
+    refreshCaptchaBtn.addEventListener('click', () => {
+      generateSixDigitCaptcha();
+      captchaInput.value = '';
+      authStatusMsg.textContent = '';
+      authStatusMsg.className = 'status-msg';
+    });
+
+    function generateAutoUsername(fullName, whatsappNumber) {
+      const cleanName = String(fullName || 'user')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '')
+        .slice(0, 8) || 'gsuser';
+      const lastFourPhone = String(whatsappNumber || '').replace(/\D/g, '').slice(-4) || String(Math.floor(1000 + Math.random() * 9000));
+      const randomSuffix = Math.floor(10 + Math.random() * 90);
+      return `${cleanName}_${lastFourPhone}${randomSuffix}`;
+    }
+
+    function showError(message) {
+      authStatusMsg.textContent = message;
+      authStatusMsg.className = 'status-msg error';
+    }
+
+    authForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const identity = document.getElementById('loginIdentity').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
 
-      if (!identity || !password) return;
+      const fullName = fullNameInput.value.trim();
+      const whatsapp = whatsappInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+      const enteredCaptcha = captchaInput.value.trim();
+
+      if (!fullName || !whatsapp || !password || !confirmPassword) {
+        showError('অনুগ্রহ করে প্রয়োজনীয় সব তথ্য পূরণ করুন।');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showError('পাসওয়ার্ড এবং কনফার্ম পাসওয়ার্ড মেলেনি।');
+        return;
+      }
+
+      if (!/^\d{6}$/.test(enteredCaptcha) || enteredCaptcha !== currentSixDigitCaptcha) {
+        showError('৬ সংখ্যার ক্যাপচা কোডটি সঠিক নয়। আবার চেষ্টা করুন।');
+        generateSixDigitCaptcha();
+        captchaInput.value = '';
+        return;
+      }
+
+      const autoUsername = generateAutoUsername(fullName, whatsapp);
 
       const userSession = {
-        user: identity,
+        username: autoUsername,
+        fullName: fullName,
+        phone: whatsapp,
+        whatsapp: whatsapp,
+        email: email,
         loggedInAt: new Date().toISOString()
       };
 
-      localStorage.setItem('gs_logged_in', 'true');
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('loggedInUser', JSON.stringify(userSession));
-      sessionStorage.setItem('loggedInUser', JSON.stringify(userSession));
+      if (window.AuthGuard) {
+        window.AuthGuard.login(userSession);
+      } else {
+        localStorage.setItem('gs_logged_in', 'true');
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('loggedInUser', JSON.stringify(userSession));
+        sessionStorage.setItem('loggedInUser', JSON.stringify(userSession));
+      }
 
-      loginMsg.textContent = 'লগইন সফল হয়েছে! হোম পেজে নিয়ে যাওয়া হচ্ছে...';
+      authStatusMsg.textContent = `সফলভাবে প্রবেশ করা হয়েছে! ইউজারনেম: ${autoUsername}`;
+      authStatusMsg.className = 'status-msg success';
 
       const params = new URLSearchParams(window.location.search);
       const redirectUrl = params.get('redirect') || 'index.html';
 
       setTimeout(() => {
         window.location.href = redirectUrl;
-      }, 600);
+      }, 500);
     });
+
+    generateSixDigitCaptcha();
   </script>
 </body>
 </html>
