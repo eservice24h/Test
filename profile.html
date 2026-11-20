@@ -11,14 +11,21 @@
     :root {
       --primary: #0f172a;
       --accent: #2563eb;
+      --accent-hover: #1d4ed8;
       --bg: #f1f5f9;
       --card: #ffffff;
       --text: #1e293b;
       --muted: #64748b;
       --border: #e2e8f0;
+      --success-bg: #ecfdf5;
+      --success-text: #065f46;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: 'Hind Siliguri', 'Poppins', sans-serif;
@@ -27,6 +34,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      line-height: 1.5;
     }
 
     header {
@@ -34,6 +42,9 @@
       color: #ffffff;
       padding: 12px 24px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .nav-container {
@@ -45,11 +56,40 @@
       gap: 12px;
     }
 
-    .brand { display: flex; flex-direction: column; text-decoration: none; }
-    .brand-title { font-family: 'Poppins', sans-serif; font-size: 1.55rem; font-weight: 700; color: #ffffff; line-height: 1.1; }
-    .brand-sub { font-size: 0.8rem; color: #cbd5e1; margin-top: 2px; }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+    }
 
-    nav { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+    .brand-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .brand-sub {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      margin-top: 2px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
     nav a {
       text-decoration: none;
       color: #e2e8f0;
@@ -57,14 +97,82 @@
       font-weight: 500;
       padding: 7px 13px;
       border-radius: 6px;
+      transition: all 0.2s ease;
     }
-    nav a:hover { background: rgba(255, 255, 255, 0.14); color: #ffffff; }
+
+    nav a:hover,
+    nav a.active {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+    }
+
+    .more-menu {
+      position: relative;
+    }
+
+    .three-dot-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 44px;
+      min-width: 195px;
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
+      padding: 6px;
+      z-index: 200;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .dropdown-menu.show {
+      display: flex;
+    }
+
+    .dropdown-menu a,
+    .dropdown-menu button {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 600;
+      font-family: inherit;
+      padding: 9px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+
+    .dropdown-menu a:hover,
+    .dropdown-menu button:hover {
+      background: var(--bg);
+      color: var(--accent);
+    }
 
     main {
       flex: 1;
-      max-width: 720px;
+      max-width: 900px;
       width: 100%;
-      margin: 24px auto;
+      margin: 22px auto 32px;
       padding: 0 16px;
     }
 
@@ -76,44 +184,172 @@
       box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
     }
 
-    .profile-card h1 {
-      font-size: 1.45rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 14px;
-      padding-bottom: 8px;
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      padding-bottom: 18px;
+      margin-bottom: 20px;
       border-bottom: 2px solid var(--border);
     }
 
-    .info-row {
-      padding: 10px 12px;
+    .avatar-box {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 3px solid var(--border);
       background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 10px;
-      font-size: 0.95rem;
-    }
-
-    .btn-row {
+      overflow: hidden;
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 16px;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
-    .btn {
-      text-decoration: none;
-      border: none;
-      padding: 9px 15px;
+    .avatar-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .avatar-placeholder {
+      font-size: 2rem;
+      color: var(--muted);
+    }
+
+    .avatar-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .avatar-controls h1 {
+      font-size: 1.38rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .avatar-controls p {
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    .upload-btn-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 7px 13px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: fit-content;
+    }
+
+    .upload-btn-label:hover {
+      background: var(--accent);
+    }
+
+    #photoInput {
+      display: none;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .hint-text {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
       border-radius: 8px;
       font-family: inherit;
-      font-size: 0.92rem;
+      font-size: 0.94rem;
+      color: var(--text);
+      background: #ffffff;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-group input[readonly] {
+      background: #f1f5f9;
+      color: #475569;
+      cursor: not-allowed;
       font-weight: 600;
+    }
+
+    .dob-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .save-row {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn-save {
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.96rem;
+      font-weight: 700;
       cursor: pointer;
     }
 
-    .btn-home { background: var(--primary); color: #ffffff; }
-    .btn-logout { background: #dc2626; color: #ffffff; }
+    .btn-save:hover {
+      background: var(--accent-hover);
+    }
+
+    .status-msg {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--success-text);
+      background: var(--success-bg);
+      padding: 6px 12px;
+      border-radius: 7px;
+      display: none;
+    }
+
+    .status-msg.show {
+      display: inline-block;
+    }
 
     footer {
       background: #0f172a;
@@ -132,37 +368,175 @@
       gap: 10px;
     }
 
-    .footer-left { font-size: 0.95rem; color: #ffffff; }
-    .footer-left i { font-family: 'Poppins', sans-serif; font-style: italic; font-weight: 600; color: #93c5fd; }
-    .footer-right { font-size: 0.8rem; color: #cbd5e1; }
+    .footer-left {
+      font-size: 0.95rem;
+      color: #ffffff;
+    }
+
+    .footer-left i {
+      font-family: 'Poppins', sans-serif;
+      font-style: italic;
+      font-weight: 600;
+      color: #93c5fd;
+    }
+
+    .footer-right {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 10px 12px;
+      }
+
+      .brand-title {
+        font-size: 1.25rem;
+      }
+
+      nav a {
+        font-size: 0.78rem;
+        padding: 5px 8px;
+      }
+
+      .dob-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 6px;
+      }
+    }
   </style>
 </head>
 <body>
+
   <header>
     <div class="nav-container">
       <a href="index.html" class="brand">
         <span class="brand-title">Graphic Studio</span>
         <span class="brand-sub">ভূইয়া অফসেট প্রিন্টিং প্রেস</span>
       </a>
-      <nav>
-        <a href="index.html">হোম পেজ</a>
-        <a href="design-printing.html">ডিজাইন অ্যান্ড প্রিন্টিং</a>
-        <a href="digital-eservice.html">ডিজিটাল ই-সার্ভিস</a>
-      </nav>
+
+      <div class="nav-right">
+        <nav>
+          <a href="index.html">হোম পেজ</a>
+          <a href="design-printing.html" id="navDesignPrinting">ডিজাইন অ্যান্ড প্রিন্টিং</a>
+          <a href="digital-eservice.html" id="navDigitalEservice">ডিজিটাল ই-সার্ভিস</a>
+        </nav>
+
+        <div class="more-menu">
+          <button type="button" class="three-dot-btn" id="threeDotBtn" aria-label="আরও অপশন" aria-expanded="false">&#8942;</button>
+          <div class="dropdown-menu" id="threeDotDropdown">
+            <a href="profile.html" id="profileMenuLink">প্রোফাইল</a>
+            <a href="auth.html" id="authMenuLink" style="display: none;">লগইন / সাইনআপ</a>
+            <a href="contact.html" id="contactMenuLink">যোগাযোগ</a>
+            <a href="admin-login.html" id="adminMenuLink" style="display: none;">অ্যাডমিন লগইন</a>
+            <button type="button" id="logoutMenuBtn">লগআউট</button>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
   <main>
-    <div class="profile-card">
-      <h1>👤 ইউজার প্রোফাইল</h1>
-      <div class="info-row"><strong>অ্যাকাউন্ট / ইমেইল:</strong> <span id="userIdText">-</span></div>
-      <div class="info-row"><strong>স্ট্যাটাস:</strong> লগইন সক্রিয়</div>
-
-      <div class="btn-row">
-        <a href="index.html" class="btn btn-home">হোম পেজে ফিরে যান</a>
-        <button type="button" class="btn btn-logout" id="logoutBtn">লগআউট</button>
+    <section class="profile-card">
+      <div class="profile-header">
+        <div class="avatar-box">
+          <img id="profilePhotoPreview" alt="ব্যক্তির ছবি" />
+          <span class="avatar-placeholder" id="avatarPlaceholder">👤</span>
+        </div>
+        <div class="avatar-controls">
+          <h1 id="headerFullName">প্রোফাইল তথ্য</h1>
+          <p>ব্যক্তির ছবি আপলোড করুন এবং প্রয়োজনীয় ব্যক্তিগত তথ্য সংরক্ষণ করুন।</p>
+          <label for="photoInput" class="upload-btn-label">📷 ছবি আপলোড করুন</label>
+          <input type="file" id="photoInput" accept="image/*" />
+        </div>
       </div>
-    </div>
+
+      <form id="profileForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="usernameField">ইউজার নেম (অটো সেট)</label>
+            <input type="text" id="usernameField" readonly />
+            <span class="hint-text">সিস্টেম থেকে স্বয়ংক্রিয়ভাবে তৈরি ইউজার নেম (পরিবর্তনযোগ্য নয়)</span>
+          </div>
+
+          <div class="form-group">
+            <label for="fullNameField">নাম</label>
+            <input type="text" id="fullNameField" readonly />
+            <span class="hint-text">অ্যাকাউন্ট তৈরির সময় সেট করা নাম</span>
+          </div>
+
+          <div class="form-group">
+            <label for="phoneField">হোয়াটসঅ্যাপ / ফোন নাম্বার</label>
+            <input type="tel" id="phoneField" readonly />
+            <span class="hint-text">অ্যাকাউন্ট তৈরির সময় সেট করা নাম্বার</span>
+          </div>
+
+          <div class="form-group">
+            <label for="emailField">ইমেইল (ঐচ্ছিক)</label>
+            <input type="email" id="emailField" placeholder="ইমেইল যুক্ত করুন (ঐচ্ছিক)" />
+            <span class="hint-text" id="emailHint">অ্যাকাউন্টে ইমেইল না থাকলে যুক্ত বা আপডেট করতে পারবেন।</span>
+          </div>
+
+          <div class="form-group">
+            <label for="idTypeField">পরিচয়পত্রের ধরন</label>
+            <select id="idTypeField">
+              <option value="NID">ভোটার আইডি কার্ড (NID)</option>
+              <option value="Birth Certificate">জন্ম সনদ</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="idNumberField">ভোটার আইডি কার্ড নাম্বার বা জন্ম সনদ নাম্বার</label>
+            <input type="text" id="idNumberField" placeholder="NID বা জন্ম সনদ নম্বর লিখুন" />
+          </div>
+        </div>
+
+        <div class="dob-grid">
+          <div class="form-group">
+            <label for="birthDay">জন্ম তারিখ</label>
+            <select id="birthDay">
+              <option value="">তারিখ নির্বাচন করুন</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="birthMonth">জন্ম মাস</label>
+            <select id="birthMonth">
+              <option value="">মাস নির্বাচন করুন</option>
+              <option value="01">জানুয়ারি (01)</option>
+              <option value="02">ফেব্রুয়ারি (02)</option>
+              <option value="03">মার্চ (03)</option>
+              <option value="04">এপ্রিল (04)</option>
+              <option value="05">মে (05)</option>
+              <option value="06">জুন (06)</option>
+              <option value="07">জুলাই (07)</option>
+              <option value="08">আগস্ট (08)</option>
+              <option value="09">সেপ্টেম্বর (09)</option>
+              <option value="10">অক্টোবর (10)</option>
+              <option value="11">নভেম্বর (11)</option>
+              <option value="12">ডিসেম্বর (12)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="birthYear">জন্ম সাল</label>
+            <select id="birthYear">
+              <option value="">সাল নির্বাচন করুন</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button type="submit" class="btn-save">💾 প্রোফাইল সেভ করুন</button>
+          <span class="status-msg" id="saveStatusMsg">প্রোফাইল তথ্য সফলভাবে সেভ হয়েছে ✓</span>
+        </div>
+      </form>
+    </section>
   </main>
 
   <footer>
@@ -172,34 +546,183 @@
     </div>
   </footer>
 
+  <script src="auth-guard.js"></script>
   <script>
-    const loggedIn =
-      localStorage.getItem('gs_logged_in') === 'true' ||
-      localStorage.getItem('isLoggedIn') === 'true' ||
-      localStorage.getItem('loggedInUser') !== null ||
-      sessionStorage.getItem('loggedInUser') !== null;
+    const PROFILE_STORAGE_KEY = 'gs_user_profile_data_v1';
 
-    if (!loggedIn) {
-      window.location.href = 'auth.html?redirect=profile.html';
-    } else {
-      let userLabel = 'লগইনকৃত ইউজার';
-      try {
-        const raw = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          userLabel = parsed.user || userLabel;
-        }
-      } catch {}
-      document.getElementById('userIdText').textContent = userLabel;
+    const threeDotBtn = document.getElementById('threeDotBtn');
+    const threeDotDropdown = document.getElementById('threeDotDropdown');
+    const birthDaySelect = document.getElementById('birthDay');
+    const birthYearSelect = document.getElementById('birthYear');
+    const photoInput = document.getElementById('photoInput');
+    const photoPreview = document.getElementById('profilePhotoPreview');
+    const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+    const profileForm = document.getElementById('profileForm');
+    const saveStatusMsg = document.getElementById('saveStatusMsg');
+
+    threeDotBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (window.AuthGuard && typeof window.AuthGuard.sync === 'function') {
+        window.AuthGuard.sync();
+      }
+      const isOpen = threeDotDropdown.classList.toggle('show');
+      threeDotBtn.setAttribute('aria-expanded', isOpen);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!threeDotDropdown.contains(e.target) && e.target !== threeDotBtn) {
+        threeDotDropdown.classList.remove('show');
+        threeDotBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    for (let d = 1; d <= 31; d++) {
+      const val = String(d).padStart(2, '0');
+      const opt = document.createElement('option');
+      opt.value = val;
+      opt.textContent = val;
+      birthDaySelect.appendChild(opt);
     }
 
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('gs_logged_in');
-      localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('loggedInUser');
-      sessionStorage.removeItem('loggedInUser');
-      window.location.href = 'index.html';
+    const currentYear = new Date().getFullYear();
+    for (let y = currentYear; y >= 1950; y--) {
+      const opt = document.createElement('option');
+      opt.value = String(y);
+      opt.textContent = String(y);
+      birthYearSelect.appendChild(opt);
+    }
+
+    function buildAutoUsername(fullName, phone) {
+      const namePart = String(fullName || 'user')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '')
+        .slice(0, 8) || 'gsuser';
+      const phonePart = String(phone || '').replace(/\D/g, '').slice(-4) || '1024';
+      const randPart = Math.floor(10 + Math.random() * 90);
+      return `${namePart}_${phonePart}${randPart}`;
+    }
+
+    function getSessionAccountData() {
+      try {
+        const raw = localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser');
+        return raw ? JSON.parse(raw) : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function getSavedProfileDetails() {
+      try {
+        return JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function renderAvatar(dataUrl) {
+      if (dataUrl) {
+        photoPreview.src = dataUrl;
+        photoPreview.style.display = 'block';
+        avatarPlaceholder.style.display = 'none';
+      } else {
+        photoPreview.removeAttribute('src');
+        photoPreview.style.display = 'none';
+        avatarPlaceholder.style.display = 'block';
+      }
+    }
+
+    function loadProfilePage() {
+      const account = getSessionAccountData();
+      const details = getSavedProfileDetails();
+
+      const fullName = account.fullName || account.name || details.fullName || 'ব্যবহারকারী';
+      const phone = account.whatsapp || account.phone || details.phone || '';
+
+      const autoUsername =
+        (account.username && account.username.trim()) ||
+        (details.username && details.username.trim()) ||
+        buildAutoUsername(fullName, phone);
+
+      account.username = autoUsername;
+      account.phone = phone;
+      account.whatsapp = phone;
+      localStorage.setItem('loggedInUser', JSON.stringify(account));
+      sessionStorage.setItem('loggedInUser', JSON.stringify(account));
+
+      const initialAccountEmail = (account.email || '').trim();
+      const effectiveEmail = initialAccountEmail || (details.email || '').trim();
+
+      document.getElementById('usernameField').value = autoUsername;
+      document.getElementById('fullNameField').value = fullName;
+      document.getElementById('headerFullName').textContent = fullName;
+      document.getElementById('phoneField').value = phone;
+
+      const emailInput = document.getElementById('emailField');
+      const emailHint = document.getElementById('emailHint');
+      emailInput.value = effectiveEmail;
+
+      if (initialAccountEmail) {
+        emailInput.readOnly = true;
+        emailHint.textContent = 'অ্যাকাউন্ট করার সময় ইমেইল দেওয়া হয়েছিল, তাই এটি পরিবর্তন করা যাবে না।';
+      } else {
+        emailInput.readOnly = false;
+        emailHint.textContent = 'অ্যাকাউন্ট করার সময় ইমেইল দেওয়া হয়নি—আপনি চাইলে এখানে ইমেইল যুক্ত বা আপডেট করতে পারেন।';
+      }
+
+      if (details.idType) document.getElementById('idTypeField').value = details.idType;
+      if (details.idNumber) document.getElementById('idNumberField').value = details.idNumber;
+      if (details.birthDay) birthDaySelect.value = details.birthDay;
+      if (details.birthMonth) document.getElementById('birthMonth').value = details.birthMonth;
+      if (details.birthYear) birthYearSelect.value = details.birthYear;
+
+      renderAvatar(details.photo || '');
+    }
+
+    let uploadedPhotoBase64 = '';
+
+    photoInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        uploadedPhotoBase64 = String(reader.result || '');
+        renderAvatar(uploadedPhotoBase64);
+      };
+      reader.readAsDataURL(file);
     });
+
+    profileForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const account = getSessionAccountData();
+      const prevDetails = getSavedProfileDetails();
+      const initialAccountEmail = (account.email || '').trim();
+      const emailVal = initialAccountEmail || document.getElementById('emailField').value.trim();
+
+      const updatedDetails = {
+        username: document.getElementById('usernameField').value.trim(),
+        fullName: document.getElementById('fullNameField').value.trim(),
+        phone: document.getElementById('phoneField').value.trim(),
+        whatsapp: document.getElementById('phoneField').value.trim(),
+        email: emailVal,
+        idType: document.getElementById('idTypeField').value,
+        idNumber: document.getElementById('idNumberField').value.trim(),
+        birthDay: birthDaySelect.value,
+        birthMonth: document.getElementById('birthMonth').value,
+        birthYear: birthYearSelect.value,
+        photo: uploadedPhotoBase64 || prevDetails.photo || ''
+      };
+
+      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(updatedDetails));
+
+      saveStatusMsg.classList.add('show');
+      setTimeout(() => {
+        saveStatusMsg.classList.remove('show');
+      }, 2500);
+    });
+
+    loadProfilePage();
   </script>
 </body>
 </html>
