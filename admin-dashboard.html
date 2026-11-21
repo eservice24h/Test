@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>অ্যাডমিন ড্যাশবোর্ড | Graphic Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:ital,wght@0,500;0,600;0,700;1,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --pending-bg: #fef3c7;
+      --pending-text: #92400e;
+      --progress-bg: #dbeafe;
+      --progress-text: #1e40af;
+      --done-bg: #dcfce7;
+      --done-text: #166534;
+      --danger: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', 'Poppins', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    header {
+      background: var(--primary);
+      color: #ffffff;
+      padding: 12px 24px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1380px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+    }
+
+    .brand-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .brand-sub {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .header-link {
+      text-decoration: none;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 7px 12px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      transition: all 0.2s ease;
+    }
+
+    .header-link:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+    }
+
+    .btn-logout {
+      background: var(--danger);
+      color: #ffffff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-logout:hover {
+      background: #b91c1c;
+    }
+
+    main {
+      flex: 1;
+      max-width: 1380px;
+      width: 100%;
+      margin: 22px auto 36px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* বাম পাশের কলাম: সময় ও নোটিশ ম্যানেজমেন্ট */
+    .left-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: sticky;
+      top: 76px;
+    }
+
+    .clock-card {
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 20px 16px;
+      text-align: center;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
+    }
+
+    .live-time {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.05rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      line-height: 1.15;
+    }
+
+    .live-time span.ampm {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-left: 4px;
+      color: #93c5fd;
+    }
+
+    .live-date {
+      margin-top: 6px;
+      font-size: 0.94rem;
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    .notice-manager-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    .notice-manager-card h2 {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .notice-manager-card p.sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 11px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: #ffffff;
+    }
+
+    .form-group textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .btn-save-notice {
+      width: 100%;
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.94rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-save-notice:hover {
+      background: var(--accent-hover);
+    }
+
+    .notice-saved-badge {
+      margin-top: 8px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #065f46;
+      background: #ecfdf5;
+      padding: 6px 10px;
+      border-radius: 7px;
+      display: none;
+      text-align: center;
+    }
+
+    .notice-saved-badge.show {
+      display: block;
+    }
+
+    /* ডান পাশের কন্টেন্ট এরিয়া */
+    .right-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    }
+
+    .stat-label {
+      font-size: 0.84rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .stat-value {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 2px;
+    }
+
+    /* ২ কলামের সার্ভিস ও অর্ডার গ্রিড */
+    .two-col-services {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+      min-width: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-header h2 {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .count-pill {
+      background: #eff6ff;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-bar input,
+    .filter-bar select {
+      flex: 1;
+      min-width: 130px;
+      padding: 7px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.86rem;
+    }
+
+    .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 460px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .order-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      background: #f8fafc;
+    }
+
+    .order-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .order-id {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .order-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 3px;
+    }
+
+    .order-meta {
+      font-size: 0.84rem;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .order-note {
+      font-size: 0.82rem;
+      color: var(--muted);
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 8px;
+      margin-bottom: 8px;
+    }
+
+    .order-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .st-pending {
+      background: var(--pending-bg);
+      color: var(--pending-text);
+    }
+
+    .st-progress {
+      background: var(--progress-bg);
+      color: var(--progress-text);
+    }
+
+    .st-done {
+      background: var(--done-bg);
+      color: var(--done-text);
+    }
+
+    .action-btns {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-select {
+      padding: 4px 7px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      background: #ffffff;
+    }
+
+    .btn-del {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-del:hover {
+      background: #fecaca;
+    }
+
+    /* অ্যাকাউন্ট ডিটেইলস টেবিল */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f8fafc;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .user-avatar-mini {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid #cbd5e1;
+      background: #e2e8f0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: var(--primary);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 20px 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    footer {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 14px 24px;
+      margin-top: auto;
+    }
+
+    .footer-container {
+      max-width: 1380px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .footer-left {
+      font-size: 0.95rem;
+      color: #ffffff;
+    }
+
+    .footer-left i {
+      font-family: 'Poppins', sans-serif;
+      font-style: italic;
+      font-weight: 600;
+      color: #93c5fd;
+    }
+
+    .footer-right {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+    }
+
+    @media (max-width: 1050px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .left-sidebar {
+        position: static;
+      }
+
+      .two-col-services {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 10px 12px;
+      }
+
+      .brand-title {
+        font-size: 1.25rem;
+      }
+
+      .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <span class="brand-title">Graphic Studio</span>
+        <span class="brand-sub">ভূইয়া অফসেট প্রিন্টিং প্রেস — অ্যাডমিন প্যানেল</span>
+      </a>
+
+      <div class="header-actions">
+        <a href="index.html" class="header-link">হোম পেজ</a>
+        <a href="digital-eservice.html" class="header-link">ই-সার্ভিস</a>
+        <a href="design-printing.html" class="header-link">ডিজাইন ও প্রিন্টিং</a>
+        <button type="button" class="btn-logout" id="adminLogoutBtn">লগআউট</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- বাম পাশ: লাইভ সময় + নিচে নোটিশ ম্যানেজমেন্ট -->
+    <aside class="left-sidebar">
+      <div class="clock-card">
+        <div class="live-time" id="liveClock">12:00:00 <span class="ampm">AM</span></div>
+        <div class="live-date" id="liveDate">তারিখ লোড হচ্ছে...</div>
+      </div>
+
+      <section class="notice-manager-card">
+        <h2>📢 নোটিশ ম্যানেজমেন্ট</h2>
+        <p class="sub">এখানে নতুন নোটিশ লিখে সেভ করলেই নরমাল ড্যাশবোর্ডে সাথে সাথে দেখাবে।</p>
+
+        <form id="adminNoticeForm">
+          <div class="form-group">
+            <label for="noticeTitleInput">নোটিশ শিরোনাম</label>
+            <input type="text" id="noticeTitleInput" placeholder="যেমন: জরুরি নোটিশ" required />
+          </div>
+
+          <div class="form-group">
+            <label for="noticeBodyInput">নোটিশের বার্তা</label>
+            <textarea id="noticeBodyInput" placeholder="নরমাল ড্যাশবোর্ডে যে নোটিশ দেখাতে চান তা লিখুন..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="noticeStatusSelect">প্রদর্শন অবস্থা</label>
+            <select id="noticeStatusSelect">
+              <option value="active">সক্রিয় (ড্যাশবোর্ডে দেখাবে)</option>
+              <option value="hidden">বন্ধ রাখুন (লুকানো থাকবে)</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-save-notice">নোটিশ সেভ করুন</button>
+          <div class="notice-saved-badge" id="noticeSavedBadge">নোটিশ সেভ হয়েছে ও নরমাল ড্যাশবোর্ডে আপডেট হয়েছে ✓</div>
+        </form>
+      </section>
+    </aside>
+
+    <!-- ডান পাশ: ২ কলামে ই-সার্ভিস ও ডিজাইন/প্রিন্টিং + নিচে অ্যাকাউন্ট ডিটেইলস -->
+    <div class="right-workspace">
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">মোট নিবন্ধিত অ্যাকাউন্ট</div>
+          <div class="stat-value" id="statUsers">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">ডিজিটাল ই-সার্ভিস আবেদন</div>
+          <div class="stat-value" id="statEservice">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">ডিজাইন ও প্রিন্টিং অর্ডার</div>
+          <div class="stat-value" id="statPrinting">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">সম্পন্ন কাজ</div>
+          <div class="stat-value" id="statCompleted">0</div>
+        </div>
+      </section>
+
+      <!-- ২টি কলাম: বামে ডিজিটাল ই-সার্ভিস, ডানে ডিজাইন/প্রিন্টিং -->
+      <section class="two-col-services">
+        <!-- কলাম ১: ডিজিটাল ই-সার্ভিস -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <h2>🌐 ডিজিটাল ই-সার্ভিস</h2>
+            <span class="count-pill" id="eserviceCountPill">০ টি</span>
+          </div>
+
+          <div class="filter-bar">
+            <input type="text" id="searchEserviceInput" placeholder="নাম, সেবা বা নাম্বার..." />
+            <select id="filterEserviceStatus">
+              <option value="ALL">সব স্ট্যাটাস</option>
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+
+          <div class="order-list" id="eserviceListContainer"></div>
+          <div class="empty-state" id="emptyEserviceMsg" style="display: none;">কোনো ডিজিটাল ই-সার্ভিস আবেদন নেই।</div>
+        </div>
+
+        <!-- কলাম ২: ডিজাইন ও প্রিন্টিং -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <h2>🖨️ ডিজাইন ও প্রিন্টিং</h2>
+            <span class="count-pill" id="printingCountPill">০ টি</span>
+          </div>
+
+          <div class="filter-bar">
+            <input type="text" id="searchPrintingInput" placeholder="নাম, প্রিন্ট আইটেম বা নাম্বার..." />
+            <select id="filterPrintingStatus">
+              <option value="ALL">সব স্ট্যাটাস</option>
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+
+          <div class="order-list" id="printingListContainer"></div>
+          <div class="empty-state" id="emptyPrintingMsg" style="display: none;">কোনো ডিজাইন বা প্রিন্টিং অর্ডার নেই।</div>
+        </div>
+      </section>
+
+      <!-- আলাদা সেকশন: নিবন্ধিত ইউজারদের অ্যাকাউন্ট ডিটেইলস -->
+      <section class="panel-card">
+        <div class="panel-header">
+          <h2>👤 নিবন্ধিত ইউজারদের অ্যাকাউন্ট ডিটেইলস</h2>
+          <div class="filter-bar" style="margin-bottom: 0;">
+            <input type="text" id="searchUserInput" placeholder="নাম, ইউজারনেম বা হোয়াটসঅ্যাপ খুঁজুন..." />
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ছবি</th>
+                <th>ইউজারনেম</th>
+                <th>পূর্ণ নাম</th>
+                <th>হোয়াটসঅ্যাপ নাম্বার</th>
+                <th>ইমেইল</th>
+                <th>NID / জন্ম নিবন্ধন</th>
+                <th>জন্মতারিখ</th>
+                <th>অ্যাকশন</th>
+              </tr>
+            </thead>
+            <tbody id="accountsDetailTableBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="emptyUsersMsg" style="display: none;">এখনও কোনো ইউজার অ্যাকাউন্ট তৈরি করেনি।</div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-left">Operated by <i>Istiake Mahin</i></div>
+      <div class="footer-right">ভূইয়া অফসেট প্রিন্টিং প্রেস দ্বারা পরিচালিত</div>
+    </div>
+  </footer>
+
+  <script>
+    const ADMIN_FLAG_KEY = 'gs_admin_logged_in';
+    const ADMIN_SESSION_KEY = 'gs_admin_session';
+
+    const NOTICE_KEY = 'gs_public_notice_board_v1';
+    const ACCOUNTS_KEY = 'gs_registered_accounts_v1';
+    const PROFILE_STORE_KEY = 'gs_user_profiles_v1';
+
+    const ESERVICE_KEYS = ['gs_eservice_applications_v1', 'gs_eservice_requests_v1'];
+    const PRINTING_KEYS = ['gs_design_printing_orders_v1', 'gs_printing_orders_v1'];
+
+    if (localStorage.getItem(ADMIN_FLAG_KEY) !== 'true') {
+      window.location.href = 'admin-login.html';
+    }
+
+    document.getElementById('adminLogoutBtn').addEventListener('click', () => {
+      localStorage.removeItem(ADMIN_FLAG_KEY);
+      localStorage.removeItem(ADMIN_SESSION_KEY);
+      window.location.href = 'admin-login.html';
+    });
+
+    // লাইভ ঘড়ি ও বাংলা তারিখ
+    const bnMonths = [
+      'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
+      'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'
+    ];
+    const bnDays = [
+      'রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'
+    ];
+
+    function toBnDigits(str) {
+      const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+      return String(str).replace(/\d/g, d => bn[d]);
+    }
+
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      const hoursStr = String(hours).padStart(2, '0');
+
+      document.getElementById('liveClock').innerHTML =
+        `${hoursStr}:${minutes}:${seconds} <span class="ampm">${ampm}</span>`;
+
+      const dayName = bnDays[now.getDay()];
+      const dayNum = toBnDigits(now.getDate());
+      const monthName = bnMonths[now.getMonth()];
+      const yearNum = toBnDigits(now.getFullYear());
+
+      document.getElementById('liveDate').textContent =
+        `${dayName}, ${dayNum} ${monthName} ${yearNum}`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // নোটিশ ম্যানেজমেন্ট
+    const noticeTitleInput = document.getElementById('noticeTitleInput');
+    const noticeBodyInput = document.getElementById('noticeBodyInput');
+    const noticeStatusSelect = document.getElementById('noticeStatusSelect');
+    const noticeSavedBadge = document.getElementById('noticeSavedBadge');
+
+    function initNoticeForm() {
+      const fallback = {
+        title: 'স্বাগতম — Graphic Studio & ভূইয়া অফসেট প্রিন্টিং প্রেস',
+        body: 'যেকোনো ডিজাইন, অফসেট প্রিন্টিং এবং ডিজিটাল ই-সার্ভিসের জন্য অনলাইনে অর্ডার বা আবেদন করুন।',
+        status: 'active'
+      };
+      try {
+        const raw = localStorage.getItem(NOTICE_KEY);
+        const parsed = raw ? { ...fallback, ...JSON.parse(raw) } : fallback;
+        noticeTitleInput.value = parsed.title;
+        noticeBodyInput.value = parsed.body;
+        noticeStatusSelect.value = parsed.status || 'active';
+      } catch {
+        noticeTitleInput.value = fallback.title;
+        noticeBodyInput.value = fallback.body;
+        noticeStatusSelect.value = fallback.status;
+      }
+    }
+
+    document.getElementById('adminNoticeForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const noticeData = {
+        title: noticeTitleInput.value.trim(),
+        body: noticeBodyInput.value.trim(),
+        status: noticeStatusSelect.value,
+        updatedAt: new Date().toISOString()
+      };
+      localStorage.setItem(NOTICE_KEY, JSON.stringify(noticeData));
+      noticeSavedBadge.classList.add('show');
+      setTimeout(() => noticeSavedBadge.classList.remove('show'), 2800);
+    });
+
+    // ডেটা রিডার হেল্পার
+    function readMergedList(keys) {
+      let combined = [];
+      keys.forEach((k) => {
+        try {
+          const arr = JSON.parse(localStorage.getItem(k) || '[]');
+          if (Array.isArray(arr)) {
+            arr.forEach((item) => {
+              if (!combined.some(existing => existing.id && existing.id === item.id)) {
+                combined.push(item);
+              }
+            });
+          }
+        } catch {}
+      });
+      return combined;
+    }
+
+    function writeToPrimaryKey(primaryKey, list) {
+      localStorage.setItem(primaryKey, JSON.stringify(list));
+    }
+
+    function statusClass(st) {
+      if (st === 'Completed') return 'status-badge st-done';
+      if (st === 'In Progress') return 'status-badge st-progress';
+      return 'status-badge st-pending';
+    }
+
+    function renderOrderColumn(options) {
+      const {
+        items,
+        searchVal,
+        statusVal,
+        containerEl,
+        emptyEl,
+        pillEl,
+        onStatusChange,
+        onDelete
+      } = options;
+
+      pillEl.textContent = `${toBnDigits(items.length)} টি`;
+
+      const filtered = items.filter((item) => {
+        const st = item.status || 'Pending';
+        const matchSt = statusVal === 'ALL' || st === statusVal;
+        const text = `${item.id || ''} ${item.service || item.item || item.title || ''} ${item.name || ''} ${item.whatsapp || item.phone || ''} ${item.note || item.details || ''}`.toLowerCase();
+        const matchQ = !searchVal || text.includes(searchVal);
+        return matchSt && matchQ;
+      });
+
+      containerEl.innerHTML = '';
+      if (filtered.length === 0) {
+        emptyEl.style.display = 'block';
+        return;
+      }
+
+      emptyEl.style.display = 'none';
+      filtered.forEach((item) => {
+        const st = item.status || 'Pending';
+        const serviceName = item.service || item.item || item.title || 'সেবা/অর্ডার';
+        const clientName = item.name || item.fullName || 'অজানা';
+        const clientPhone = item.whatsapp || item.phone || '-';
+        const noteText = item.note || item.details || '';
+
+        const div = document.createElement('div');
+        div.className = 'order-item';
+        div.innerHTML = `
+          <div class="order-top">
+            <span class="order-id">${item.id || '#ORD'}</span>
+            <span class="${statusClass(st)}">${st}</span>
+          </div>
+          <div class="order-title">${serviceName}</div>
+          <div class="order-meta"><b>নাম:</b> ${clientName} • <b>হোয়াটসঅ্যাপ:</b> ${clientPhone}</div>
+          ${noteText ? `<div class="order-note">${noteText}</div>` : ''}
+          <div class="order-controls">
+            <span style="font-size:0.76rem; color:var(--muted);">স্ট্যাটাস পরিবর্তন:</span>
+            <div class="action-btns">
+              <select class="status-select">
+                <option value="Pending" ${st === 'Pending' ? 'selected' : ''}>Pending</option>
+                <option value="In Progress" ${st === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                <option value="Completed" ${st === 'Completed' ? 'selected' : ''}>Completed</option>
+              </select>
+              <button type="button" class="btn-del">মুছুন</button>
+            </div>
+          </div>
+        `;
+
+        div.querySelector('.status-select').addEventListener('change', (e) => {
+          onStatusChange(item.id, e.target.value);
+        });
+
+        div.querySelector('.btn-del').addEventListener('click', () => {
+          onDelete(item.id);
+        });
+
+        containerEl.appendChild(div);
+      });
+    }
+
+    function renderAccountsSection() {
+      let accounts = [];
+      let profilesMap = {};
+      try {
+        accounts = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '[]');
+        if (!Array.isArray(accounts)) accounts = [];
+      } catch {}
+      try {
+        profilesMap = JSON.parse(localStorage.getItem(PROFILE_STORE_KEY) || '{}') || {};
+      } catch {}
+
+      const query = document.getElementById('searchUserInput').value.trim().toLowerCase();
+      const tbody = document.getElementById('accountsDetailTableBody');
+      const emptyUsersMsg = document.getElementById('emptyUsersMsg');
+      tbody.innerHTML = '';
+
+      const mergedUsers = accounts.map((acc) => {
+        const key = acc.username || acc.whatsapp || '';
+        const extra = profilesMap[key] || profilesMap[acc.whatsapp] || {};
+        return {
+          ...acc,
+          ...extra,
+          fullName: extra.fullName || acc.fullName || '-',
+          whatsapp: acc.whatsapp || acc.phone || extra.phone || '-',
+          email: extra.email || acc.email || '-'
+        };
+      });
+
+      const filteredUsers = mergedUsers.filter((u) => {
+        const blob = `${u.username || ''} ${u.fullName || ''} ${u.whatsapp || ''} ${u.email || ''} ${u.nidOrBirth || ''}`.toLowerCase();
+        return !query || blob.includes(query);
+      });
+
+      document.getElementById('statUsers').textContent = mergedUsers.length;
+
+      if (filteredUsers.length === 0) {
+        emptyUsersMsg.style.display = 'block';
+        return;
+      }
+
+      emptyUsersMsg.style.display = 'none';
+      filteredUsers.forEach((u) => {
+        const initial = String(u.fullName || 'U').trim().charAt(0).toUpperCase();
+        const avatarHtml = u.photoDataUrl
+          ? `<img src="${u.photoDataUrl}" alt="${u.fullName}" class="user-avatar-mini" />`
+          : `<span class="user-avatar-mini">${initial}</span>`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${avatarHtml}</td>
+          <td><b>${u.username || '-'}</b></td>
+          <td>${u.fullName || '-'}</td>
+          <td>${u.whatsapp || '-'}</td>
+          <td>${u.email || '-'}</td>
+          <td>${u.nidOrBirth || '-'}</td>
+          <td>${u.dob || '-'}</td>
+          <td><button type="button" class="btn-del" data-user="${u.username || u.whatsapp}">মুছুন</button></td>
+        `;
+
+        tr.querySelector('.btn-del').addEventListener('click', () => {
+          const updated = accounts.filter(a => (a.username || a.whatsapp) !== (u.username || u.whatsapp));
+          localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(updated));
+          renderDashboard();
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderDashboard() {
+      const eserviceList = readMergedList(ESERVICE_KEYS);
+      const printingList = readMergedList(PRINTING_KEYS);
+
+      document.getElementById('statEservice').textContent = eserviceList.length;
+      document.getElementById('statPrinting').textContent = printingList.length;
+
+      const totalCompleted =
+        eserviceList.filter(i => i.status === 'Completed').length +
+        printingList.filter(i => i.status === 'Completed').length;
+      document.getElementById('statCompleted').textContent = totalCompleted;
+
+      renderOrderColumn({
+        items: eserviceList,
+        searchVal: document.getElementById('searchEserviceInput').value.trim().toLowerCase(),
+        statusVal: document.getElementById('filterEserviceStatus').value,
+        containerEl: document.getElementById('eserviceListContainer'),
+        emptyEl: document.getElementById('emptyEserviceMsg'),
+        pillEl: document.getElementById('eserviceCountPill'),
+        onStatusChange: (id, newSt) => {
+          const updated = eserviceList.map(x => x.id === id ? { ...x, status: newSt } : x);
+          ESERVICE_KEYS.forEach(k => writeToPrimaryKey(k, updated));
+          renderDashboard();
+        },
+        onDelete: (id) => {
+          const updated = eserviceList.filter(x => x.id !== id);
+          ESERVICE_KEYS.forEach(k => writeToPrimaryKey(k, updated));
+          renderDashboard();
+        }
+      });
+
+      renderOrderColumn({
+        items: printingList,
+        searchVal: document.getElementById('searchPrintingInput').value.trim().toLowerCase(),
+        statusVal: document.getElementById('filterPrintingStatus').value,
+        containerEl: document.getElementById('printingListContainer'),
+        emptyEl: document.getElementById('emptyPrintingMsg'),
+        pillEl: document.getElementById('printingCountPill'),
+        onStatusChange: (id, newSt) => {
+          const updated = printingList.map(x => x.id === id ? { ...x, status: newSt } : x);
+          PRINTING_KEYS.forEach(k => writeToPrimaryKey(k, updated));
+          renderDashboard();
+        },
+        onDelete: (id) => {
+          const updated = printingList.filter(x => x.id !== id);
+          PRINTING_KEYS.forEach(k => writeToPrimaryKey(k, updated));
+          renderDashboard();
+        }
+      });
+
+      renderAccountsSection();
+    }
+
+    document.getElementById('searchEserviceInput').addEventListener('input', renderDashboard);
+    document.getElementById('filterEserviceStatus').addEventListener('change', renderDashboard);
+    document.getElementById('searchPrintingInput').addEventListener('input', renderDashboard);
+    document.getElementById('filterPrintingStatus').addEventListener('change', renderDashboard);
+    document.getElementById('searchUserInput').addEventListener('input', renderAccountsSection);
+
+    window.addEventListener('storage', () => {
+      initNoticeForm();
+      renderDashboard();
+    });
+
+    initNoticeForm();
+    renderDashboard();
+  </script>
+</body>
+</html>
